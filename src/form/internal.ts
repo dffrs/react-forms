@@ -1,8 +1,10 @@
 export class Internal {
   registor: Record<string, React.RefObject<HTMLInputElement>>;
+  defaultValues: Record<string, unknown>;
 
   constructor() {
     this.registor = {};
+    this.defaultValues = {};
   }
 
   isFieldRegistred(fieldName: string) {
@@ -37,5 +39,20 @@ export class Internal {
 
       return prev;
     }, {});
+  }
+
+  getDefaultValueFor(fieldName: string) {
+    return this.defaultValues[fieldName];
+  }
+
+  getDefaultValues() {
+    return Object.keys(this.registor).reduce<Record<string, unknown>>(
+      (prev, curr) => {
+        prev[curr] = this.getDefaultValueFor(curr);
+
+        return prev;
+      },
+      {},
+    );
   }
 }

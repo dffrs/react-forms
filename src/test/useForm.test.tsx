@@ -52,4 +52,20 @@ describe("Form Tests: useForm", () => {
 
     render(<DummyComp />);
   });
+
+  it("default value is injected into field", () => {
+    const InputComp = () => {
+      const form = useForm("test", {
+        defaultValues: { "test-input": "this is a test" },
+      });
+
+      return <input type="text" {...form.register("test-input")} />;
+    };
+
+    const { container } = render(<InputComp />);
+
+    expect(container.querySelector('input[name="test-input"]')).toHaveValue(
+      "this is a test",
+    );
+  });
 });

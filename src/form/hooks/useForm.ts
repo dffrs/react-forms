@@ -1,8 +1,8 @@
 import { useRef } from "react";
-import { Form } from "..";
+import { Form, type Options } from "..";
 
-export const useForm = (name: string) => {
-  const form = useRef(new Form(name));
+export const useForm = (name: string, opt?: Options) => {
+  const form = useRef(new Form(name, opt));
 
   return form.current;
 };
