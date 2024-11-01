@@ -1,5 +1,5 @@
 export class Internal {
-  registor: Record<string, React.RefObject<HTMLInputElement>>;
+  registor: Record<string, HTMLInputElement>;
   defaultValues: Record<string, unknown>;
 
   constructor() {
@@ -11,10 +11,7 @@ export class Internal {
     return fieldName in this.registor;
   }
 
-  registerField<V extends HTMLInputElement>(
-    fieldName: string,
-    ref: React.RefObject<V>,
-  ) {
+  registerField<V extends HTMLInputElement>(fieldName: string, ref: V) {
     if (this.isFieldRegistred(fieldName)) return this.registor[fieldName];
 
     this.registor[fieldName] = ref;
@@ -32,10 +29,7 @@ export class Internal {
     return Object.entries(this.registor).reduce<
       Record<string, string | undefined>
     >((prev, [key, ref]) => {
-      const _ref = ref.current;
-      if (!_ref) return prev;
-
-      prev[key] = _ref.value;
+      prev[key] = ref.value;
 
       return prev;
     }, {});
