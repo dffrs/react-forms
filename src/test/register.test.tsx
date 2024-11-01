@@ -1,4 +1,5 @@
-import { Form } from "../form";
+import { useEffect } from "react";
+import { useForm } from "../form";
 import { render } from "@testing-library/react";
 
 type InputType = React.HTMLInputTypeAttribute;
@@ -120,29 +121,33 @@ describe("Form tests: Values", () => {
     ] as Array<Temp>
   ).forEach(({ descr, type, expected }) => {
     it("registers field input " + descr, () => {
-      const form = new Form("test");
-
       const InputComp = () => {
+        const form = useForm("test");
+
+        useEffect(() => {
+          expect(form.getValues()).toEqual({ ["dummy-input"]: expected });
+        }, [form]);
+
         const ref = form.register("dummy-input");
         return <input type={type} ref={ref} />;
       };
 
       render(<InputComp />);
-
-      expect(form.getValues()).toEqual({ ["dummy-input"]: expected });
     });
   });
 
   it("respects inptus value", () => {
-    const form = new Form("test");
-
     const InputComp = () => {
+      const form = useForm("test");
+
+      useEffect(() => {
+        expect(form.getValues()).toEqual({ ["dummy-input"]: "test" });
+      }, [form]);
+
       const ref = form.register("dummy-input");
       return <input type="text" ref={ref} value="test" />;
     };
 
     render(<InputComp />);
-
-    expect(form.getValues()).toEqual({ ["dummy-input"]: "test" });
   });
 });

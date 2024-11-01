@@ -8,6 +8,9 @@ describe("Form Tests: useForm", () => {
       const [_, setS] = useState(false);
 
       const form = useForm("dummy-form");
+
+      expect(form).not.toBeFalsy();
+
       const initialFormRef = useRef(form);
 
       useEffect(() => {
@@ -36,6 +39,8 @@ describe("Form Tests: useForm", () => {
       const [_, setS] = useState(false);
 
       const form = useForm("dummy-form");
+
+      expect(form).not.toBeFalsy();
 
       useEffect(() => {
         // Re-render by toggling the state
