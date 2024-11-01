@@ -128,7 +128,7 @@ describe("Form tests: Values", () => {
           expect(form.getValues()).toEqual({ ["dummy-input"]: expected });
         }, [form]);
 
-        return <input type={type} ref={form.register("dummy-input")} />;
+        return <input type={type} {...form.register("dummy-input")} />;
       };
 
       render(<InputComp />);
@@ -144,7 +144,7 @@ describe("Form tests: Values", () => {
       }, [form]);
 
       return (
-        <input type="text" ref={form.register("dummy-input")} value="test" />
+        <input type="text" {...form.register("dummy-input")} value="test" />
       );
     };
 

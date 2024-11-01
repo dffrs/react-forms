@@ -20,7 +20,7 @@ export class Form {
   register(fieldName: string) {
     const ref = createRef<HTMLInputElement>();
 
-    return this.internalState.registerField(fieldName, ref);
+    return { ref: this.internalState.registerField(fieldName, ref) };
   }
 
   getValues() {
