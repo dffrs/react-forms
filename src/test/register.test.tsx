@@ -135,7 +135,7 @@ describe("Form tests: Values", () => {
     });
   });
 
-  it("respects inptus value", () => {
+  it("respects inputs value", () => {
     const InputComp = () => {
       const form = useForm("test");
 
