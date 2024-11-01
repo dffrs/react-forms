@@ -47,7 +47,16 @@ export class Form {
         this.internalState.registerField(fieldName, input);
 
         const defaultValue = this.internalState.getDefaultValueFor(fieldName);
-        if (defaultValue) input.defaultValue = defaultValue as string; // TODO: Fix type
+        if (defaultValue) {
+          switch (input.type) {
+            case "checkbox":
+              input.defaultChecked = defaultValue as boolean;
+              break;
+            default:
+              input.defaultValue = defaultValue as string; // TODO: Fix type
+              break;
+          }
+        }
       },
     };
   }

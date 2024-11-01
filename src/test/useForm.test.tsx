@@ -53,7 +53,7 @@ describe("Form Tests: useForm", () => {
     render(<DummyComp />);
   });
 
-  it("default value is injected into field", () => {
+  it("default value is injected into field (text)", () => {
     const InputComp = () => {
       const form = useForm("test", {
         defaultValues: { "test-input": "this is a test" },
@@ -67,5 +67,21 @@ describe("Form Tests: useForm", () => {
     expect(container.querySelector('input[name="test-input"]')).toHaveValue(
       "this is a test",
     );
+  });
+
+  it("default value is injected into field (checkbox)", () => {
+    const InputComp = () => {
+      const form = useForm("test", {
+        defaultValues: { "test-checkbox": true },
+      });
+
+      return <input type="checkbox" {...form.register("test-checkbox")} />;
+    };
+
+    const { container } = render(<InputComp />);
+
+    expect(
+      container.querySelector('input[name="test-checkbox"]'),
+    ).toBeChecked();
   });
 });
