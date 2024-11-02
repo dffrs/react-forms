@@ -61,7 +61,7 @@ describe("Form tests: Values", () => {
       {
         descr: "type radio",
         type: "radio",
-        expected: "on",
+        expected: false,
       },
       {
         descr: "type range",
@@ -106,7 +106,7 @@ describe("Form tests: Values", () => {
       {
         descr: "type checkbox",
         type: "checkbox",
-        expected: "on",
+        expected: false,
       },
       {
         descr: "type password",

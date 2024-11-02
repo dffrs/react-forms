@@ -81,7 +81,7 @@ export class Form {
           switch (input.type) {
             case "radio":
             case "checkbox":
-              input.defaultChecked = defaultValue as boolean;
+              input.checked = !!defaultValue;
               break;
             default:
               input.defaultValue = defaultValue as string; // TODO: Fix type

@@ -47,13 +47,27 @@ export class Internal {
   }
 
   getValues() {
-    return Object.entries(this.registor).reduce<
-      Record<string, string | undefined>
-    >((prev, [key, ref]) => {
-      prev[key] = ref.value;
+    return Object.entries(this.registor).reduce<Record<string, unknown>>(
+      (prev, [key, ref]) => {
+        let value;
 
-      return prev;
-    }, {});
+        switch (ref.type) {
+          case "radio":
+          case "checkbox":
+            value = ref.checked;
+            break;
+
+          default:
+            value = ref.value;
+            break;
+        }
+
+        prev[key] = value;
+
+        return prev;
+      },
+      {},
+    );
   }
 
   getDefaultValueFor(_fieldName: Register) {
