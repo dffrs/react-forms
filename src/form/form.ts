@@ -47,7 +47,9 @@ export class Form {
         this.internalState.registerField(fieldName, input);
 
         const defaultValue = this.internalState.getDefaultValueFor(fieldName);
-        if (defaultValue) {
+
+        // NOTE: undefined is the only value that can NOT be injected into inputs. What's the point, if nothing changes ?
+        if (defaultValue !== undefined) {
           switch (input.type) {
             case "checkbox":
               input.defaultChecked = defaultValue as boolean;
