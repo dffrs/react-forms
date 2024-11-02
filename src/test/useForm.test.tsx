@@ -56,12 +56,10 @@ describe("Form Tests: useForm", () => {
 
   Object.entries({
     text: {
-      descr: "text field",
       defaulValue: "test",
       expected: "test",
     },
     checkbox: {
-      descr: "checkbox field",
       defaulValue: true,
       cb: (cont) => {
         expect(cont).toBeChecked();
@@ -70,13 +68,12 @@ describe("Form Tests: useForm", () => {
   } as Record<
     InputType,
     {
-      descr: string;
       defaulValue: unknown;
       expected?: any;
       cb?: (input: Element) => void;
     }
-  >).forEach(([type, { descr, defaulValue, expected, cb }]) => {
-    it("default value is injected into " + descr, () => {
+  >).forEach(([type, { defaulValue, expected, cb }]) => {
+    it("default value is injected into " + type + " input", () => {
       const InputComp = () => {
         const form = useForm("test", {
           defaultValues: { "test-input": defaulValue },
