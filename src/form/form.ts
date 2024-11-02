@@ -30,9 +30,8 @@ export class Form {
     this.name = name;
     this.internalState = new SpyInternal();
 
-    if (opt?.defaultValues) {
+    if (opt?.defaultValues)
       this.internalState.defaultValues = this.flattenObject(opt?.defaultValues);
-    }
   }
 
   private flattenObject(obj: Record<string, any>): Record<string, unknown> {
@@ -60,39 +59,16 @@ export class Form {
   }
 
   register<V extends HTMLInputElement>(fieldName: Register) {
-    if (typeof fieldName === "string") {
-      return {
-        name: fieldName,
-        ref: (input: V | null) => {
-          if (!input) return;
-
-          this.internalState.registerField(fieldName, input);
-
-          const defaultValue = this.internalState.getDefaultValueFor(fieldName);
-
-          // NOTE: undefined is the only value that can NOT be injected into inputs. What's the point, if nothing changes ?
-          if (defaultValue !== undefined) {
-            switch (input.type) {
-              case "radio":
-                input.defaultChecked = defaultValue as boolean;
-                break;
-              case "checkbox":
-                input.defaultChecked = defaultValue as boolean;
-                break;
-              default:
-                input.defaultValue = defaultValue as string; // TODO: Fix type
-                break;
-            }
-          }
-        },
-      };
-    }
-
-    const { groupName, element } = fieldName;
+    const props =
+      typeof fieldName === "string"
+        ? { name: fieldName }
+        : {
+            name: fieldName.groupName,
+            value: fieldName.element,
+          };
 
     return {
-      name: groupName,
-      value: element,
+      ...props,
       ref: (input: V | null) => {
         if (!input) return;
 
@@ -100,15 +76,20 @@ export class Form {
 
         const defaultValue = this.internalState.getDefaultValueFor(fieldName);
 
+        // NOTE: undefined is the only value that can NOT be injected into inputs. What's the point, if nothing changes ?
         if (defaultValue !== undefined) {
           switch (input.type) {
             case "radio":
+            case "checkbox":
               input.defaultChecked = defaultValue as boolean;
               break;
             default:
+              input.defaultValue = defaultValue as string; // TODO: Fix type
               break;
           }
         }
+
+        return input;
       },
     };
   }
