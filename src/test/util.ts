@@ -1,0 +1,26 @@
+export const SUPPORTED_INPUT_TYPES = {
+  number: "number",
+  button: "button",
+  checkbox: "checkbox",
+  color: "color",
+  date: "date",
+  "datetime-local": "datetime-local",
+  email: "email",
+  file: "file",
+  hidden: "hidden",
+  image: "image",
+  month: "month",
+  password: "password",
+  radio: "radio",
+  range: "range",
+  reset: "reset",
+  search: "search",
+  submit: "submit",
+  tel: "tel",
+  text: "text",
+  time: "time",
+  url: "url",
+  week: "week",
+} as const;
+
+export type InputType = keyof typeof SUPPORTED_INPUT_TYPES;
