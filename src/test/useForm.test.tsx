@@ -92,4 +92,47 @@ describe("Form Tests: useForm", () => {
       else expect(element).toHaveValue(expected);
     });
   });
+
+  it("default value for input type radio", () => {
+    const RadioComp = () => {
+      const form = useForm("radio-form", {
+        defaultValues: {
+          contact: {
+            email: true,
+          },
+        },
+      });
+
+      return (
+        <>
+          <input
+            type="radio"
+            id="contactChoice1"
+            value="email"
+            {...form.register({ groupName: "contact", element: "email" })}
+          />
+          <label htmlFor="contactChoice1">Email</label>
+          <input
+            type="radio"
+            id="contactChoice2"
+            value="phone"
+            {...form.register({ groupName: "contact", element: "phone" })}
+          />
+          <label htmlFor="contactChoice2">Phone</label>
+          <input
+            type="radio"
+            id="contactChoice3"
+            value="mail"
+            {...form.register({ groupName: "contact", element: "mail" })}
+          />
+          <label htmlFor="contactChoice3">Mail</label>
+        </>
+      );
+    };
+    const { container } = render(<RadioComp />);
+
+    expect(container.querySelector('input[value="email"]')).toBeChecked();
+    expect(container.querySelector('input[value="phone"]')).not.toBeChecked();
+    expect(container.querySelector('input[value="mail"]')).not.toBeChecked();
+  });
 });

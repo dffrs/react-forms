@@ -1,17 +1,38 @@
+import { GroupReg, Register, SimpleReg } from "./types";
+
 export class Internal {
   registor: Record<string, HTMLInputElement>;
   defaultValues: Record<string, unknown>;
+  private static readonly DELIMITER = ".";
 
   constructor() {
     this.registor = {};
     this.defaultValues = {};
   }
 
+  getDelimiter() {
+    return Internal.DELIMITER;
+  }
+
+  encodeFieldName(groupReg: GroupReg): SimpleReg {
+    return `${groupReg["groupName"]}${Internal.DELIMITER}${groupReg["element"]}`;
+  }
+
+  decodeFieldName(encodedFieldName: SimpleReg): GroupReg {
+    const [groupName, element] = encodedFieldName.split(Internal.DELIMITER);
+    return { groupName, element };
+  }
+
   isFieldRegistred(fieldName: string) {
     return fieldName in this.registor;
   }
 
-  registerField<V extends HTMLInputElement>(fieldName: string, ref: V) {
+  registerField<V extends HTMLInputElement>(_fieldName: Register, ref: V) {
+    const fieldName =
+      typeof _fieldName === "string"
+        ? _fieldName
+        : this.encodeFieldName(_fieldName);
+
     if (this.isFieldRegistred(fieldName)) return this.registor[fieldName];
 
     this.registor[fieldName] = ref;
@@ -35,7 +56,12 @@ export class Internal {
     }, {});
   }
 
-  getDefaultValueFor(fieldName: string) {
+  getDefaultValueFor(_fieldName: Register) {
+    const fieldName =
+      typeof _fieldName === "string"
+        ? _fieldName
+        : this.encodeFieldName(_fieldName);
+
     return this.defaultValues[fieldName];
   }
 
