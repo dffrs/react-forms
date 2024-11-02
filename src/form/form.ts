@@ -35,10 +35,6 @@ export class Form {
     }
   }
 
-  getName() {
-    return this.name;
-  }
-
   private flattenObject(obj: Record<string, any>): Record<string, unknown> {
     let resultObj: Record<string, unknown> = {};
 
@@ -59,7 +55,10 @@ export class Form {
     return resultObj;
   }
 
-  // @AfterMethod
+  getName() {
+    return this.name;
+  }
+
   register<V extends HTMLInputElement>(fieldName: Register) {
     if (typeof fieldName === "string") {
       return {

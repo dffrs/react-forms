@@ -65,6 +65,10 @@ describe("Form Tests: useForm", () => {
         expect(cont).toBeChecked();
       },
     },
+    range: {
+      defaulValue: 12,
+      expected: "12",
+    },
   } as Record<
     InputType,
     {
