@@ -103,6 +103,10 @@ export class Form {
     };
   }
 
+  getValueFor(fieldName: Register) {
+    return this.internalState.getValueFor(fieldName);
+  }
+
   getValues() {
     return this.internalState.getValues();
   }

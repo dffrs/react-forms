@@ -46,29 +46,34 @@ export class Internal {
     return true;
   }
 
+  getValueFor(_fieldName: Register) {
+    const fieldName =
+      typeof _fieldName === "string"
+        ? _fieldName
+        : this.encodeFieldName(_fieldName);
+
+    const ref = this.registor[fieldName];
+
+    switch (ref.type) {
+      case "file":
+        return ref.files;
+      case "radio":
+      case "checkbox":
+        return ref.checked;
+
+      case "number":
+        if (ref.value === "") return undefined;
+        return +ref.value; // NOTE: might return NaN
+
+      default:
+        return ref.value;
+    }
+  }
+
   getValues() {
-    return Object.entries(this.registor).reduce<Record<string, unknown>>(
-      (prev, [key, ref]) => {
-        let value;
-
-        switch (ref.type) {
-          case "file":
-            value = ref.files;
-            break;
-          case "radio":
-          case "checkbox":
-            value = ref.checked;
-            break;
-
-          case "number":
-            if (ref.value === "") value = undefined;
-            else value = +ref.value; // NOTE: might return NaN
-            break;
-
-          default:
-            value = ref.value;
-            break;
-        }
+    return Object.keys(this.registor).reduce<Record<string, unknown>>(
+      (prev, key) => {
+        let value = this.getValueFor(key);
 
         prev[key] = value;
 
