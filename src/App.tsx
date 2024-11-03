@@ -63,6 +63,11 @@ function App() {
           />
           <label htmlFor="contactChoice3">Mail</label>
         </div>
+        <div>
+          <h3>File</h3>
+          <input type="file" id="fileId" {...form.register("i-file")} />
+          <label htmlFor="fileId">Test</label>
+        </div>
       </div>
     </>
   );

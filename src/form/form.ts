@@ -79,6 +79,11 @@ export class Form {
         // NOTE: undefined is the only value that can NOT be injected into inputs. What's the point, if nothing changes ?
         if (defaultValue !== undefined) {
           switch (input.type) {
+            case "file":
+              console.error(
+                `[Error-register]: default value for file inputs are not supported`,
+              );
+              break;
             case "radio":
             case "checkbox":
               input.defaultChecked = !!defaultValue;

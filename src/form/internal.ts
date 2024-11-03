@@ -52,6 +52,9 @@ export class Internal {
         let value;
 
         switch (ref.type) {
+          case "file":
+            value = ref.files;
+            break;
           case "radio":
           case "checkbox":
             value = ref.checked;

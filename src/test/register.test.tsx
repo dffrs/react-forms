@@ -24,11 +24,6 @@ describe("Form tests: Values", () => {
         expected: "",
       },
       {
-        descr: "type file",
-        type: "file",
-        expected: "",
-      },
-      {
         descr: "type time",
         type: "time",
         expected: "",
