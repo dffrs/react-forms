@@ -83,6 +83,12 @@ describe("Form Tests: useForm", () => {
           defaultValues: { "test-input": defaulValue },
         });
 
+        useEffect(() => {
+          expect(form.getValues()).toEqual({
+            "test-input": expected ?? defaulValue,
+          });
+        }, [form, expected, expected]);
+
         return <input type={type} {...form.register("test-input")} />;
       };
 
@@ -106,6 +112,14 @@ describe("Form Tests: useForm", () => {
           },
         },
       });
+
+      useEffect(() => {
+        expect(form.getValues()).toEqual({
+          "contact.email": true,
+          "contact.phone": false,
+          "contact.mail": false,
+        });
+      }, [form]);
 
       return (
         <>
