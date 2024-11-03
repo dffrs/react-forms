@@ -57,6 +57,11 @@ export class Internal {
             value = ref.checked;
             break;
 
+          case "number":
+            if (ref.value === "") value = undefined;
+            else value = +ref.value; // NOTE: might return NaN
+            break;
+
           default:
             value = ref.value;
             break;

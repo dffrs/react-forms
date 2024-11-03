@@ -76,7 +76,7 @@ describe("Form tests: Values", () => {
       {
         descr: "type number",
         type: "number",
-        expected: "",
+        expected: undefined, // NOTE: if there's no value, it should return undefined, not 0
       },
       {
         descr: "type button",

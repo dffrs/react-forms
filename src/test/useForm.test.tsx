@@ -69,6 +69,18 @@ describe("Form Tests: useForm", () => {
       defaulValue: 12,
       expected: "12",
     },
+    email: {
+      defaulValue: "test@mail.com",
+      expected: "test@mail.com",
+    },
+    tel: {
+      defaulValue: "123123123",
+      expected: "123123123",
+    },
+    number: {
+      defaulValue: 69, // nice
+      expected: 69,
+    },
   } as Record<
     InputType,
     {
