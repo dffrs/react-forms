@@ -81,13 +81,17 @@ export class Form {
           switch (input.type) {
             case "radio":
             case "checkbox":
-              input.checked = !!defaultValue;
+              input.defaultChecked = !!defaultValue;
               break;
             default:
               input.defaultValue = defaultValue as string; // TODO: Fix type
               break;
           }
         }
+
+        // const a = (args: any) => console.log(args);
+
+        // input.addEventListener("input", a);
 
         return input;
       },
