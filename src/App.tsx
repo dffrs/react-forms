@@ -1,4 +1,5 @@
-import { useForm } from "./form";
+import { useEffect } from "react";
+import { useForm, useWatchValue } from "./form";
 
 function App() {
   const form = useForm("inputs", {
@@ -11,11 +12,31 @@ function App() {
     },
   });
 
+  const value = useWatchValue("i-checkbox", { form });
+
+  useEffect(() => {
+    console.log("value", value);
+  }, [value]);
+
   return (
     <>
       <h1>Inputs</h1>
       <button type="button" onClick={() => console.log(form.getValues())}>
         log form values
+      </button>
+
+      <button
+        type="button"
+        onClick={() => console.log(form.internalState.values)}
+      >
+        internal values
+      </button>
+
+      <button
+        type="button"
+        onClick={() => form.internalState.values["i-checkbox"].setValue(false)}
+      >
+        change checkbox
       </button>
       <div
         style={{

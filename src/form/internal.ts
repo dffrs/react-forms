@@ -1,13 +1,36 @@
+import { Spy } from "@dffrs/spy";
 import { GroupReg, Register, SimpleReg } from "./types";
+
+class Value<V> {
+  value: V | undefined;
+  constructor() {
+    this.value = undefined; // NOTE: init value
+  }
+
+  getValue() {
+    return this.value;
+  }
+
+  setValue(newValue: V | undefined) {
+    this.value = newValue;
+  }
+}
+
+const SValue = Spy(Value);
+const dummy = new (Spy(Value))();
+type A = typeof dummy;
 
 export class Internal {
   registor: Record<string, HTMLInputElement>;
   defaultValues: Record<string, unknown>;
+  values: Record<string, A>;
+
   private static readonly DELIMITER = ".";
 
   constructor() {
     this.registor = {};
     this.defaultValues = {};
+    this.values = {};
   }
 
   getDelimiter() {
@@ -101,5 +124,16 @@ export class Internal {
       },
       {},
     );
+  }
+
+  temp(key: string, newV: unknown) {}
+
+  initValues(values: Record<string, unknown>) {
+    Object.entries(values).forEach(([key, defValue]) => {
+      const v = new SValue<typeof defValue>();
+      v.setValue(defValue);
+
+      this.values[key] = v;
+    });
   }
 }

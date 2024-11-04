@@ -30,8 +30,11 @@ export class Form {
     this.name = name;
     this.internalState = new SpyInternal();
 
-    if (opt?.defaultValues)
-      this.internalState.defaultValues = this.flattenObject(opt?.defaultValues);
+    if (opt?.defaultValues) {
+      const flattenDefValues = this.flattenObject(opt?.defaultValues);
+      this.internalState.defaultValues = flattenDefValues;
+      this.internalState.initValues(flattenDefValues);
+    }
   }
 
   private flattenObject(obj: Record<string, any>): Record<string, unknown> {
