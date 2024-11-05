@@ -36,7 +36,7 @@ function App() {
 
       <button
         type="button"
-        onClick={() => form.internalState.values["i-checkbox"].setValue(false)}
+        onClick={() => form.setValueFor("i-checkbox", false)}
       >
         change checkbox
       </button>

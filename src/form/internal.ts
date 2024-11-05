@@ -149,4 +149,26 @@ export class Internal {
       this.values[key] = v;
     });
   }
+
+  setValueFor(_fieldName: Register, value: unknown) {
+    const fieldName = this.simplifyFieldName(_fieldName);
+
+    if (!(fieldName in this.registor)) {
+      console.error(
+        `[Error-setValueFor]: Not possible to set value for ${_fieldName}. It must be registered first`,
+      );
+      return;
+    }
+
+    const inpRef = this.registor[fieldName];
+
+    let v: A;
+    if (fieldName in this.values) v = this.values[fieldName];
+    else v = new SValue();
+
+    v.setValue(value);
+
+    // NOTE: IT ONLY WORKS FOR CHECKBOX (SO FAR)
+    inpRef.checked = value as boolean; // TODO: create method to inject form's internal values with input's values
+  }
 }

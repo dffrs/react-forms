@@ -119,4 +119,8 @@ export class Form {
   getValues() {
     return this.internalState.getValues();
   }
+
+  setValueFor(fieldName: Register, value: unknown) {
+    this.internalState.setValueFor(fieldName, value);
+  }
 }
