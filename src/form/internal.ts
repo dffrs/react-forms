@@ -126,8 +126,6 @@ export class Internal {
     );
   }
 
-  temp(key: string, newV: unknown) {}
-
   initValues(values: Record<string, unknown>) {
     Object.entries(values).forEach(([key, defValue]) => {
       const v = new SValue<typeof defValue>();

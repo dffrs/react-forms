@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Form } from "../form";
 import { Register } from "../types";
 
@@ -19,11 +19,17 @@ export const useWatchValue = (fieldName: Register, opts?: Opts) => {
     () => form.internalState.values[_fieldName].value, // TODO:this must be accessed via getValueFor
   );
 
-  const setNewValue = useCallback(<V extends typeof value>(newV: V) => {
+  const setNewValue = useCallback(<V>(newV: V) => {
     setValue(newV);
   }, []);
 
-  form.internalState.values[_fieldName].observe("value", setNewValue);
+  useEffect(() => {
+    form.internalState.values[_fieldName].observe("value", setNewValue);
+
+    return () => {
+      form.internalState.values[_fieldName].remove("value", setNewValue);
+    };
+  }, [form, _fieldName]);
 
   return value;
 };
