@@ -75,13 +75,16 @@ export class Form {
       ref: (input: V | null) => {
         if (!input) return;
 
-        this.internalState.registerField(fieldName, input);
+        // NOTE: Field must be register ONLY once.
+        if (this.internalState.isFieldRegistred(fieldName)) return;
+
+        const inpRef = this.internalState.registerField(fieldName, input);
 
         const defaultValue = this.internalState.getDefaultValueFor(fieldName);
 
         // NOTE: undefined is the only value that can NOT be injected into inputs. What's the point, if nothing changes ?
         if (defaultValue !== undefined) {
-          switch (input.type) {
+          switch (inpRef.type) {
             case "file":
               console.error(
                 `[Error-register]: default value for file inputs are not supported`,
@@ -89,19 +92,22 @@ export class Form {
               break;
             case "radio":
             case "checkbox":
-              input.defaultChecked = !!defaultValue;
+              inpRef.defaultChecked = !!defaultValue;
               break;
             default:
-              input.defaultValue = defaultValue as string; // TODO: Fix type
+              inpRef.defaultValue = defaultValue as string; // TODO: Fix type
               break;
           }
         }
+
+        // NOTE: init value in form's `values` attribute. Important to do this AFTER injecting default values (`values` will take those into consideration)
+        this.internalState.initValueFor(fieldName, inpRef);
 
         // const a = (args: any) => console.log(args);
 
         // input.addEventListener("input", a);
 
-        return input;
+        return inpRef;
       },
     };
   }

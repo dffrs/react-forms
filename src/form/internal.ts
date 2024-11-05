@@ -46,36 +46,18 @@ export class Internal {
     return { groupName, element };
   }
 
-  isFieldRegistred(fieldName: string) {
-    return fieldName in this.registor;
+  simplifyFieldName(fieldName: Register) {
+    return typeof fieldName === "string"
+      ? fieldName
+      : this.encodeFieldName(fieldName);
   }
 
-  registerField<V extends HTMLInputElement>(_fieldName: Register, ref: V) {
-    const fieldName =
-      typeof _fieldName === "string"
-        ? _fieldName
-        : this.encodeFieldName(_fieldName);
-
-    if (this.isFieldRegistred(fieldName)) return this.registor[fieldName];
-
-    this.registor[fieldName] = ref;
-    return ref;
+  isFieldRegistred(fieldName: Register) {
+    return this.simplifyFieldName(fieldName) in this.registor;
   }
 
-  unregisterField(fieldName: string) {
-    if (!this.isFieldRegistred(fieldName)) return false;
-
-    delete this.registor[fieldName];
-    return true;
-  }
-
-  getValueFor(_fieldName: Register) {
-    const fieldName =
-      typeof _fieldName === "string"
-        ? _fieldName
-        : this.encodeFieldName(_fieldName);
-
-    const ref = this.registor[fieldName];
+  getValueFromInput<V extends HTMLInputElement>(input: V) {
+    const ref = input;
 
     switch (ref.type) {
       case "file":
@@ -93,6 +75,30 @@ export class Internal {
     }
   }
 
+  registerField<V extends HTMLInputElement>(_fieldName: Register, ref: V) {
+    const fieldName = this.simplifyFieldName(_fieldName);
+
+    if (this.isFieldRegistred(fieldName)) return this.registor[fieldName];
+
+    this.registor[fieldName] = ref;
+    return ref;
+  }
+
+  unregisterField(fieldName: string) {
+    if (!this.isFieldRegistred(fieldName)) return false;
+
+    delete this.registor[fieldName];
+    return true;
+  }
+
+  getValueFor(_fieldName: Register) {
+    const fieldName = this.simplifyFieldName(_fieldName);
+
+    const ref = this.registor[fieldName];
+
+    return this.getValueFromInput(ref);
+  }
+
   getValues() {
     return Object.keys(this.registor).reduce<Record<string, unknown>>(
       (prev, key) => {
@@ -107,10 +113,7 @@ export class Internal {
   }
 
   getDefaultValueFor(_fieldName: Register) {
-    const fieldName =
-      typeof _fieldName === "string"
-        ? _fieldName
-        : this.encodeFieldName(_fieldName);
+    const fieldName = this.simplifyFieldName(_fieldName);
 
     return this.defaultValues[fieldName];
   }
@@ -124,6 +127,18 @@ export class Internal {
       },
       {},
     );
+  }
+
+  initValueFor<V extends HTMLInputElement>(_fieldName: Register, input: V) {
+    const fieldName = this.simplifyFieldName(_fieldName);
+
+    let v: A;
+    if (fieldName in this.values) v = this.values[fieldName];
+    else v = new SValue();
+
+    v.setValue(this.getValueFromInput(input));
+
+    this.values[fieldName] = v;
   }
 
   initValues(values: Record<string, unknown>) {
