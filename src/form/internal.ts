@@ -56,6 +56,7 @@ export class Internal {
     return this.simplifyFieldName(fieldName) in this.registor;
   }
 
+  // TODO: This needs to get values FROM form, not inputs (they might not be available at the time)
   getValueFromInput<V extends HTMLInputElement>(input: V) {
     const ref = input;
 
@@ -166,9 +167,35 @@ export class Internal {
     if (fieldName in this.values) v = this.values[fieldName];
     else v = new SValue();
 
+    // NOTE: This injects values into form
     v.setValue(value);
 
-    // NOTE: IT ONLY WORKS FOR CHECKBOX (SO FAR)
-    inpRef.checked = value as boolean; // TODO: create method to inject form's internal values with input's values
+    // NOTE: This injects values into inputs
+    switch (inpRef.type) {
+      case "file":
+        if (!(value instanceof FileList)) {
+          console.error(
+            `[Error-serValueFor]: Injecting value (${value}) into field. Value must be Filelist or null.`,
+          );
+          break;
+        }
+        inpRef.files = value;
+        break;
+
+      case "radio":
+      case "checkbox":
+        if (typeof value !== "boolean") {
+          console.error(
+            `[Error-serValueFor]: Injecting value (${value}) into field. Value must be boolean.`,
+          );
+          break;
+        }
+        inpRef.checked = value;
+        break;
+
+      default:
+        inpRef.value = `${value}`;
+        break;
+    }
   }
 }
