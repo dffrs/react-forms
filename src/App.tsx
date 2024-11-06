@@ -36,9 +36,9 @@ function App() {
 
       <button
         type="button"
-        onClick={() => form.setValueFor("i-checkbox", false)}
+        onClick={() => form.setValueFor("i-checkbox", !value)}
       >
-        change checkbox
+        toggle checkbox
       </button>
       <button type="button" onClick={() => setOpen((e) => !e)}>
         open/close
