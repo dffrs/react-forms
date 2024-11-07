@@ -17,13 +17,11 @@ class Value<V> {
 }
 
 const SValue = Spy(Value);
-const dummy = new (Spy(Value))();
-type A = typeof dummy;
 
 export class Internal {
   registor: Record<string, HTMLInputElement>;
   defaultValues: Record<string, unknown>;
-  values: Record<string, A>;
+  values: Record<string, InstanceType<typeof SValue>>;
 
   private static readonly DELIMITER = ".";
 
@@ -124,7 +122,7 @@ export class Internal {
   initValueFor<V extends HTMLInputElement>(_fieldName: Register, input: V) {
     const fieldName = this.simplifyFieldName(_fieldName);
 
-    let v: A;
+    let v;
     if (fieldName in this.values) v = this.values[fieldName];
     else v = new SValue();
 
@@ -196,7 +194,7 @@ export class Internal {
 
     const inpRef = this.registor[fieldName];
 
-    let v: A;
+    let v;
     if (fieldName in this.values) v = this.values[fieldName];
     else v = new SValue();
 

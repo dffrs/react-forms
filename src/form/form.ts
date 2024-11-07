@@ -23,8 +23,8 @@ export type Options = {
 };
 
 export class Form {
-  private name;
-  internalState;
+  private name: string;
+  internalState: InstanceType<typeof SpyInternal>;
 
   constructor(name: string, opt?: Options) {
     this.name = name;
