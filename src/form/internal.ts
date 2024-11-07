@@ -7,10 +7,6 @@ class Value<V> {
     this.value = undefined; // NOTE: init value
   }
 
-  getValue() {
-    return this.value;
-  }
-
   setValue(newValue: V | undefined) {
     this.value = newValue;
   }
@@ -154,6 +150,7 @@ export class Internal {
   getValueFor(_fieldName: Register) {
     const fieldName = this.simplifyFieldName(_fieldName);
 
+    // has it been registered ?
     if (!(fieldName in this.values)) {
       console.error(
         `[Error-getValuesFor]: ${fieldName} needs to be registered first`,
@@ -161,7 +158,7 @@ export class Internal {
       return;
     }
 
-    return this.values[fieldName].getValue();
+    return this.values[fieldName].value;
   }
 
   getValues() {

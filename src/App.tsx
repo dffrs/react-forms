@@ -6,7 +6,7 @@ function App() {
 
   const form = useForm("inputs", {
     defaultValues: {
-      "i-checkbox": true,
+      // "i-checkbox": true,
       "i-text": "this is a text input",
       "i-radio": {
         phone: true,
@@ -62,6 +62,7 @@ function App() {
             <input
               type="checkbox"
               id="checkboxId"
+              checked
               {...form.register("i-checkbox")}
             />
             <label htmlFor="checkboxId">Test</label>
