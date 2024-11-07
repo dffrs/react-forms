@@ -100,12 +100,10 @@ export class Form {
           }
         }
 
-        // NOTE: init value in form's `values` attribute. Important to do this AFTER injecting default values (`values` will take those into consideration)
+        // NOTE: init values in form's `values` attribute.
+        // Injects new values that were NOT specified on default values
+        // Important to do this AFTER injecting default values (`values` will take those into consideration)
         this.internalState.initValueFor(fieldName, inpRef);
-
-        // const a = (args: any) => console.log(args);
-
-        // input.addEventListener("input", a);
 
         return inpRef;
       },

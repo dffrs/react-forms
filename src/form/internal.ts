@@ -33,6 +33,11 @@ export class Internal {
     this.values = {};
   }
 
+  ///////////////////////////////////////////////////
+  //                                               //
+  //                   Helpers                     //
+  //                                               //
+  ///////////////////////////////////////////////////
   getDelimiter() {
     return Internal.DELIMITER;
   }
@@ -56,7 +61,78 @@ export class Internal {
     return this.simplifyFieldName(fieldName) in this.registor;
   }
 
-  // TODO: This needs to get values FROM form, not inputs (they might not be available at the time)
+  ///////////////////////////////////////////////////
+  //                                               //
+  //     Registering and unregistering fields      //
+  //                                               //
+  ///////////////////////////////////////////////////
+  registerField<V extends HTMLInputElement>(_fieldName: Register, ref: V) {
+    const fieldName = this.simplifyFieldName(_fieldName);
+
+    if (this.isFieldRegistred(fieldName)) return this.registor[fieldName];
+
+    this.registor[fieldName] = ref;
+    return ref;
+  }
+
+  unregisterField(fieldName: string) {
+    if (!this.isFieldRegistred(fieldName)) return false;
+
+    delete this.registor[fieldName];
+    return true;
+  }
+
+  ///////////////////////////////////////////////////
+  //                                               //
+  //           Default values for fields           //
+  //                                               //
+  ///////////////////////////////////////////////////
+  getDefaultValueFor(_fieldName: Register) {
+    const fieldName = this.simplifyFieldName(_fieldName);
+
+    return this.defaultValues[fieldName];
+  }
+
+  getDefaultValues() {
+    return Object.keys(this.registor).reduce<Record<string, unknown>>(
+      (prev, curr) => {
+        prev[curr] = this.getDefaultValueFor(curr);
+
+        return prev;
+      },
+      {},
+    );
+  }
+
+  copyDefValues(defValues: Record<string, unknown>) {
+    Object.entries(defValues).forEach(([key, defValue]) => {
+      const v = new SValue<typeof defValue>();
+      v.setValue(defValue);
+
+      this.values[key] = v;
+    });
+  }
+
+  ///////////////////////////////////////////////////
+  //                                               //
+  //             Get values from form              //
+  //                                               //
+  ///////////////////////////////////////////////////
+
+  // NOTE: Creates  a new entry, on form's values, for a field.
+  // This is usefull for fields that were NOT specified on default values
+  initValueFor<V extends HTMLInputElement>(_fieldName: Register, input: V) {
+    const fieldName = this.simplifyFieldName(_fieldName);
+
+    let v: A;
+    if (fieldName in this.values) v = this.values[fieldName];
+    else v = new SValue();
+
+    v.setValue(this.getValueFromInput(input));
+
+    this.values[fieldName] = v;
+  }
+
   getValueFromInput<V extends HTMLInputElement>(input: V) {
     const ref = input;
 
@@ -76,22 +152,7 @@ export class Internal {
     }
   }
 
-  registerField<V extends HTMLInputElement>(_fieldName: Register, ref: V) {
-    const fieldName = this.simplifyFieldName(_fieldName);
-
-    if (this.isFieldRegistred(fieldName)) return this.registor[fieldName];
-
-    this.registor[fieldName] = ref;
-    return ref;
-  }
-
-  unregisterField(fieldName: string) {
-    if (!this.isFieldRegistred(fieldName)) return false;
-
-    delete this.registor[fieldName];
-    return true;
-  }
-
+  // TODO: This needs to get values FROM form, not inputs (they might not be available at the time)
   getValueFor(_fieldName: Register) {
     const fieldName = this.simplifyFieldName(_fieldName);
 
@@ -113,44 +174,11 @@ export class Internal {
     );
   }
 
-  getDefaultValueFor(_fieldName: Register) {
-    const fieldName = this.simplifyFieldName(_fieldName);
-
-    return this.defaultValues[fieldName];
-  }
-
-  getDefaultValues() {
-    return Object.keys(this.registor).reduce<Record<string, unknown>>(
-      (prev, curr) => {
-        prev[curr] = this.getDefaultValueFor(curr);
-
-        return prev;
-      },
-      {},
-    );
-  }
-
-  initValueFor<V extends HTMLInputElement>(_fieldName: Register, input: V) {
-    const fieldName = this.simplifyFieldName(_fieldName);
-
-    let v: A;
-    if (fieldName in this.values) v = this.values[fieldName];
-    else v = new SValue();
-
-    v.setValue(this.getValueFromInput(input));
-
-    this.values[fieldName] = v;
-  }
-
-  copyDefValues(defValues: Record<string, unknown>) {
-    Object.entries(defValues).forEach(([key, defValue]) => {
-      const v = new SValue<typeof defValue>();
-      v.setValue(defValue);
-
-      this.values[key] = v;
-    });
-  }
-
+  ///////////////////////////////////////////////////
+  //                                               //
+  //             Set values onto fields            //
+  //                                               //
+  ///////////////////////////////////////////////////
   setValueFor(_fieldName: Register, value: unknown) {
     const fieldName = this.simplifyFieldName(_fieldName);
 
