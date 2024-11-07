@@ -33,7 +33,7 @@ export class Form {
     if (opt?.defaultValues) {
       const flattenDefValues = this.flattenObject(opt?.defaultValues);
       this.internalState.defaultValues = flattenDefValues;
-      this.internalState.initValues(flattenDefValues);
+      this.internalState.copyDefValues(flattenDefValues);
     }
   }
 

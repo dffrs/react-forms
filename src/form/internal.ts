@@ -142,8 +142,8 @@ export class Internal {
     this.values[fieldName] = v;
   }
 
-  initValues(values: Record<string, unknown>) {
-    Object.entries(values).forEach(([key, defValue]) => {
+  copyDefValues(defValues: Record<string, unknown>) {
+    Object.entries(defValues).forEach(([key, defValue]) => {
       const v = new SValue<typeof defValue>();
       v.setValue(defValue);
 
