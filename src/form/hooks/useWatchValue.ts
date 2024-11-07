@@ -15,9 +15,7 @@ export const useWatchValue = (fieldName: Register, opts?: Opts) => {
       ? fieldName
       : form.internalState.encodeFieldName(fieldName);
 
-  const [value, setValue] = useState(
-    () => form.internalState.values[_fieldName].value, // TODO:this must be accessed via getValueFor
-  );
+  const [value, setValue] = useState(() => form.getValueFor(_fieldName));
 
   const setNewValue = useCallback(<V>(newV: V) => {
     setValue(newV);

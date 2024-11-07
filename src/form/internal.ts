@@ -156,9 +156,14 @@ export class Internal {
   getValueFor(_fieldName: Register) {
     const fieldName = this.simplifyFieldName(_fieldName);
 
-    const ref = this.registor[fieldName];
+    if (!(fieldName in this.values)) {
+      console.error(
+        `[Error-getValuesFor]: ${fieldName} needs to be registered first`,
+      );
+      return;
+    }
 
-    return this.getValueFromInput(ref);
+    return this.values[fieldName].getValue();
   }
 
   getValues() {
