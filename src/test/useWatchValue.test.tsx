@@ -1,5 +1,4 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { useEffect } from "react";
 import { useWatchValue } from "../form";
 import { useForm } from "../form/hooks/useForm";
 
@@ -13,14 +12,6 @@ describe("Form Test: useWatchValue", () => {
       });
 
       const value = useWatchValue("text-input", { form });
-
-      useEffect(() => {
-        console.log("values", form.getValueFor("text-input"));
-      }, [form]);
-
-      useEffect(() => {
-        console.log("here", value);
-      }, [value]);
 
       if (value instanceof FileList) throw Error();
 
