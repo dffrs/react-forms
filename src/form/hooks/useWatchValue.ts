@@ -21,13 +21,16 @@ export const useWatchValue = (fieldName: Register, opts?: Opts) => {
     setValue(newV);
   }, []);
 
-  useEffect(() => {
-    form.internalState.values[_fieldName].observe("value", setNewValue);
+  // useEffect(() => {
+  //   form.internalState.values[_fieldName].observe("value", setNewValue);
+  //
+  //   return () => {
+  //     form.internalState.values[_fieldName].remove("value", setNewValue);
+  //   };
+  // }, [form, _fieldName, setNewValue]);
 
-    return () => {
-      form.internalState.values[_fieldName].remove("value", setNewValue);
-    };
-  }, [form, _fieldName]);
+  // NOTE: why ?????
+  form.internalState.values[_fieldName].observe("value", setNewValue);
 
   return value;
 };

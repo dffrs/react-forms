@@ -38,7 +38,7 @@ export class Form {
   }
 
   private flattenObject(obj: Record<string, any>): Record<string, unknown> {
-    let resultObj: Record<string, unknown> = {};
+    const resultObj: Record<string, unknown> = {};
 
     const encode = this.internalState.encodeFieldName;
 

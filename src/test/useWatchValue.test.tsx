@@ -87,7 +87,7 @@ describe("Form Test: useWatchValue", () => {
     expect(span).toHaveTextContent("change with set value");
   });
 
-  it.only("listens to value change (no default value BUT there's a value on the field)", () => {
+  it("listens to value change (no default value BUT there's a value on the field)", () => {
     const InputComp = () => {
       const form = useForm("test-form");
 

@@ -116,24 +116,12 @@ export class Internal {
   // NOTE: Creates  a new entry, on form's values, for a field.
   // This is usefull for fields that were NOT specified on default values
   initValueFor<V extends HTMLInputElement>(_fieldName: Register, input: V) {
-    console.log("corri init");
     const fieldName = this.simplifyFieldName(_fieldName);
-
-    console.log(
-      "init values",
-      fieldName in this.values,
-      this.values[fieldName],
-    );
 
     let v;
     if (fieldName in this.values) v = this.values[fieldName];
-    else {
-      console.log("nao deveria ter entrado aqui");
-      v = new SValue();
-    }
+    else v = new SValue();
 
-    v.setValue(this.getValueFromInput(input));
-    v.setValue(this.getValueFromInput(input));
     v.setValue(this.getValueFromInput(input));
 
     this.values[fieldName] = v;
@@ -160,7 +148,6 @@ export class Internal {
 
   // TODO: This needs to get values FROM form, not inputs (they might not be available at the time)
   getValueFor(_fieldName: Register) {
-    console.log("corri getValue");
     const fieldName = this.simplifyFieldName(_fieldName);
 
     // has it been registered ?
@@ -174,10 +161,6 @@ export class Internal {
       v.setValue(undefined);
 
       this.values[fieldName] = v;
-
-      console.log("getVAlue depois de criar v", this.values[fieldName]);
-
-      // return;
     }
 
     return this.values[fieldName].value;
@@ -186,7 +169,7 @@ export class Internal {
   getValues() {
     return Object.keys(this.registor).reduce<Record<string, unknown>>(
       (prev, key) => {
-        let value = this.getValueFor(key);
+        const value = this.getValueFor(key);
 
         prev[key] = value;
 
