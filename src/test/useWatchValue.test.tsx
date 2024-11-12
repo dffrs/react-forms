@@ -86,4 +86,45 @@ describe("Form Test: useWatchValue", () => {
 
     expect(span).toHaveTextContent("change with set value");
   });
+
+  it.only("listens to value change (no default value BUT there's a value on the field)", () => {
+    const InputComp = () => {
+      const form = useForm("test-form");
+
+      const value = useWatchValue("text-input", { form });
+
+      if (value instanceof FileList) throw Error();
+
+      return (
+        <>
+          <input
+            data-testid="input"
+            type="text"
+            value="test"
+            {...form.register("text-input")}
+          />
+          {/* @ts-expect-error */}
+          <span data-testid="span">{value}</span>
+          <button
+            data-testid="button"
+            onClick={() =>
+              form.setValueFor("text-input", "change with set value")
+            }
+          >
+            click
+          </button>
+        </>
+      );
+    };
+
+    render(<InputComp />);
+    const button = screen.getByTestId("button");
+    const span = screen.getByTestId("span");
+
+    expect(span).toHaveTextContent("test");
+
+    fireEvent.click(button);
+
+    expect(span).toHaveTextContent("change with set value");
+  });
 });
