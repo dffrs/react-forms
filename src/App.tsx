@@ -43,6 +43,12 @@ function App() {
       <button type="button" onClick={() => setOpen((e) => !e)}>
         open/close
       </button>
+      <button
+        type="button"
+        onClick={() => console.log(form.internalState.values["i-checkbox"])}
+      >
+        fds
+      </button>
       {open && (
         <div
           style={{

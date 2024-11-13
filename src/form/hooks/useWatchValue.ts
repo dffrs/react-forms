@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Form } from "../form";
 import { Register } from "../types";
 
@@ -21,16 +21,9 @@ export const useWatchValue = (fieldName: Register, opts?: Opts) => {
     setValue(newV);
   }, []);
 
-  // useEffect(() => {
-  //   form.internalState.values[_fieldName].observe("value", setNewValue);
-  //
-  //   return () => {
-  //     form.internalState.values[_fieldName].remove("value", setNewValue);
-  //   };
-  // }, [form, _fieldName, setNewValue]);
-
-  // NOTE: why ?????
-  form.internalState.values[_fieldName].observe("value", setNewValue);
+  useMemo(() => {
+    form.internalState.values[_fieldName].observe("value", setNewValue);
+  }, [_fieldName, form, setNewValue]);
 
   return value;
 };
