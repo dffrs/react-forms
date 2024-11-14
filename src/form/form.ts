@@ -57,6 +57,11 @@ export class Form {
     return resultObj;
   }
 
+  private listenToInputChanges(fieldName: Register, input: HTMLInputElement) {
+    const value = this.internalState.getValueFromInput(input);
+    this.setValueFor(fieldName, value);
+  }
+
   getName() {
     return this.name;
   }
@@ -104,6 +109,12 @@ export class Form {
         // Injects new values that were NOT specified on default values
         // Important to do this AFTER injecting default values (`values` will take those into consideration)
         this.internalState.initValueFor(fieldName, inpRef);
+
+        const temp = () => {
+          this.listenToInputChanges(fieldName, input);
+        };
+
+        inpRef.addEventListener("input", temp); // TODO: Need to remove event
 
         return inpRef;
       },
