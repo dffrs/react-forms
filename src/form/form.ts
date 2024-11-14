@@ -57,9 +57,20 @@ export class Form {
     return resultObj;
   }
 
-  private listenToInputChanges(fieldName: Register, input: HTMLInputElement) {
-    const value = this.internalState.getValueFromInput(input);
-    this.setValueFor(fieldName, value);
+  private listenToInputChanges() {
+    return (ev: Event) => {
+      const target = ev.target;
+
+      if (!(target instanceof HTMLInputElement)) {
+        console.error(
+          "[Error-listenToInputChanges]: Only input elements can be registered",
+        );
+        return;
+      }
+
+      const value = this.internalState.getValueFromInput(target);
+      this.setValueFor(target.name, value);
+    };
   }
 
   getName() {
@@ -110,9 +121,7 @@ export class Form {
         // Important to do this AFTER injecting default values (`values` will take those into consideration)
         this.internalState.initValueFor(fieldName, inpRef);
 
-        const temp = () => {
-          this.listenToInputChanges(fieldName, input);
-        };
+        const temp = this.listenToInputChanges();
 
         inpRef.addEventListener("input", temp); // TODO: Need to remove event
 
