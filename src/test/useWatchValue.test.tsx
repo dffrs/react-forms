@@ -1,7 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { useWatchValue } from "../form";
+import { FormProvider, useWatchValue } from "../form";
 import { useForm } from "../form/hooks/useForm";
-import { FormProvider } from "../form/hooks/formContext/provider";
 
 describe("Form Test: useWatchValue", () => {
   it("listens to value change (inherits from default values)", () => {
