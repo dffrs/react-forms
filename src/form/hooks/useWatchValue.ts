@@ -1,14 +1,14 @@
 import { useCallback, useMemo, useState } from "react";
 import { Form } from "../form";
 import { Register } from "../types";
+import { useFormContext } from "./formContext";
 
 type Opts = {
   form: Form;
 };
 
 export const useWatchValue = (fieldName: Register, opts?: Opts) => {
-  const { form } = opts ?? {};
-  if (!form) throw Error("Form is not defined");
+  const form = useFormContext(opts?.form);
 
   const _fieldName =
     typeof fieldName === "string"
