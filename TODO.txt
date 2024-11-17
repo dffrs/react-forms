@@ -1,0 +1,2 @@
+1- Check radio input. Clicking on field throws an error
+2- onChange on the input does not work after being registered
