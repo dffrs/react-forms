@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "../form";
-import { render } from "@testing-library/react";
+import { fireEvent, render } from "@testing-library/react";
 import { InputType } from "./util";
 
 describe("Form Tests: useForm", () => {
@@ -164,5 +164,73 @@ describe("Form Tests: useForm", () => {
     expect(container.querySelector('input[value="email"]')).toBeChecked();
     expect(container.querySelector('input[value="phone"]')).not.toBeChecked();
     expect(container.querySelector('input[value="mail"]')).not.toBeChecked();
+  });
+
+  it("only one true value when clicking on radio fields", () => {
+    const RadioComp = () => {
+      const form = useForm("radio-form", {
+        defaultValues: {
+          contact: {
+            email: true,
+          },
+        },
+      });
+
+      useEffect(() => {
+        expect(form.getValues()).toEqual({
+          "contact.email": true,
+          "contact.phone": false,
+          "contact.mail": false,
+        });
+      }, [form]);
+
+      return (
+        <>
+          <input
+            type="radio"
+            id="contactChoice1"
+            value="email"
+            {...form.register({ groupName: "contact", element: "email" })}
+          />
+          <label htmlFor="contactChoice1">Email</label>
+          <input
+            type="radio"
+            id="contactChoice2"
+            value="phone"
+            {...form.register({ groupName: "contact", element: "phone" })}
+          />
+          <label htmlFor="contactChoice2">Phone</label>
+          <input
+            type="radio"
+            id="contactChoice3"
+            value="mail"
+            {...form.register({ groupName: "contact", element: "mail" })}
+          />
+          <label htmlFor="contactChoice3">Mail</label>
+          <button
+            data-testid="check"
+            onClick={() => {
+              expect(form.getValues()).toEqual({
+                "contact.email": false,
+                "contact.phone": true,
+                "contact.mail": false,
+              });
+            }}
+          >
+            find me
+          </button>
+        </>
+      );
+    };
+    const { container } = render(<RadioComp />);
+
+    const radioPhone = container.querySelector('input[value="phone"]');
+    if (radioPhone == null) throw Error("field not found");
+
+    const btn = container.querySelector('[data-testid="check"]');
+    if (btn == null) throw Error("button not found");
+
+    fireEvent.click(radioPhone);
+    fireEvent.click(btn);
   });
 });
