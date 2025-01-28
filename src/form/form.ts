@@ -152,6 +152,34 @@ export class Form {
   }
 
   setValueFor(fieldName: Register, value: unknown) {
+    // TODO: refactor this
+    // fieldName could be passed in as 'radio.something' instead of { groupName: 'radio', element: 'something'}
+    if (typeof fieldName === "string") {
+      this.internalState.setValueFor(fieldName, value);
+      return;
+    }
+
+    // NOTE:
+    // For input radios, only 1 option can be 'true'
+    // This function turns 'true' option to 'false' first (assuming that other option is selected),
+    // and then sets 'value'
+    // TODO: CLEAN THIS UP
+    Object.keys(this.getValues())
+      .filter((inputFieldNames) => {
+        if (
+          !inputFieldNames.includes(
+            fieldName.groupName + this.internalState.getDelimiter(),
+          )
+        )
+          return;
+        if (this.getValueFor(inputFieldNames) !== true) return;
+
+        return inputFieldNames;
+      })
+      .forEach((fieldsToReset) => {
+        this.internalState.setValueFor(fieldsToReset, false);
+      });
+
     this.internalState.setValueFor(fieldName, value);
   }
 }
