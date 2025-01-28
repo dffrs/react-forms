@@ -99,7 +99,7 @@ describe("Form Tests: useForm", () => {
           expect(form.getValues()).toEqual({
             "test-input": expected ?? defaulValue,
           });
-        }, [form, expected, expected]);
+        }, [form]);
 
         return <input type={type} {...form.register("test-input")} />;
       };
