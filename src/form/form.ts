@@ -57,7 +57,7 @@ export class Form {
     return resultObj;
   }
 
-  private listenToInputChanges() {
+  private listenToInputChanges(fieldName: Register) {
     return (ev: Event) => {
       const target = ev.target;
 
@@ -69,7 +69,20 @@ export class Form {
       }
 
       const value = this.internalState.getValueFromInput(target);
-      this.setValueFor(target.name, value);
+
+      this.setValueFor(fieldName, value);
+
+      const nativeSetter = Object.getOwnPropertyDescriptor(
+        Object.getPrototypeOf(target),
+        "value",
+      )?.set;
+
+      if (nativeSetter) {
+        nativeSetter.call(target, value);
+
+        const ev = new Event("change", { bubbles: true });
+        target.dispatchEvent(ev);
+      }
     };
   }
 
@@ -121,7 +134,7 @@ export class Form {
         // Important to do this AFTER injecting default values (`values` will take those into consideration)
         this.internalState.initValueFor(fieldName, inpRef);
 
-        const temp = this.listenToInputChanges();
+        const temp = this.listenToInputChanges(fieldName);
 
         inpRef.addEventListener("input", temp); // TODO: Need to remove event
 

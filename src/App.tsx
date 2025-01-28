@@ -66,7 +66,13 @@ function App() {
         >
           <div>
             <h3>Text</h3>
-            <input type="text" id="textId" {...form.register("i-text")} />
+            <input
+              type="text"
+              id="textId"
+              {...form.register("i-text")}
+              onInput={() => console.log("input")}
+              onChange={() => console.log("change")}
+            />
           </div>
           <div>
             <h3>Checkbox</h3>
