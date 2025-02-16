@@ -68,8 +68,8 @@ export class Form {
         return;
       }
 
+      // get value from the input and update forms
       const value = this.internalState.getValueFromInput(target);
-
       this.setValueFor(fieldName, value);
 
       const nativeSetter = Object.getOwnPropertyDescriptor(
@@ -80,7 +80,7 @@ export class Form {
       if (nativeSetter) {
         nativeSetter.call(target, value);
 
-        const ev = new Event("change", { bubbles: true });
+        const ev = new Event("input", { bubbles: true });
         target.dispatchEvent(ev);
       }
     };
@@ -136,7 +136,7 @@ export class Form {
 
         const temp = this.listenToInputChanges(fieldName);
 
-        inpRef.addEventListener("input", temp); // TODO: Need to remove event
+        // inpRef.addEventListener("input", temp); // TODO: Need to remove event
 
         return inpRef;
       },

@@ -212,7 +212,7 @@ export class Internal {
           );
           break;
         }
-        inpRef.files = value;
+        inpRef.files = value; // TODO: test me. Use forms to inject a new file
         break;
 
       case "radio":

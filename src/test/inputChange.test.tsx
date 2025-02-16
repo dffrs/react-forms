@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { useForm } from "../form";
 
 describe("On input change", () => {
-  it("input's input event triggers form to update it's values (input text field)", () => {
+  it("input's input event triggers form to update its values (input text field)", () => {
     const InputComp = () => {
       const form = useForm("test-form", {
         defaultValues: {
@@ -44,7 +44,7 @@ describe("On input change", () => {
     fireEvent.click(button);
   });
 
-  it("input's input event triggers form to update it's values (input checkbox field)", () => {
+  it("input's input event triggers form to update its values (input checkbox field)", () => {
     const InputComp = () => {
       const form = useForm("test-form", {
         defaultValues: {

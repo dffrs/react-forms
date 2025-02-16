@@ -80,6 +80,8 @@ function App() {
               type="checkbox"
               id="checkboxId"
               {...form.register("i-checkbox")}
+              onInput={() => console.log("input")}
+              onChange={() => console.log("change")}
             />
             <label htmlFor="checkboxId">Test</label>
           </div>
@@ -89,6 +91,8 @@ function App() {
               type="radio"
               id="contactChoice1"
               value="email"
+              onInput={() => console.log("input")}
+              onChange={() => console.log("change")}
               {...form.register({ groupName: "i-radio", element: "email" })}
             />
             <label htmlFor="contactChoice1">Email</label>
