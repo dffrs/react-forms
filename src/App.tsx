@@ -15,11 +15,15 @@ function App() {
   });
 
   const value = useWatchValue("i-checkbox", { form });
-  // const valueText = useWatchValue("i-text", { form });
+  const file = useWatchValue("i-file", { form });
 
   useEffect(() => {
     console.log("value", value);
   }, [value]);
+
+  useEffect(() => {
+    console.log("value", file);
+  }, [file]);
 
   // useEffect(() => {
   //   console.log("text value", valueText);

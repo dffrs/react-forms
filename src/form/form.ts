@@ -136,7 +136,7 @@ export class Form {
 
         const temp = this.listenToInputChanges(fieldName);
 
-        // inpRef.addEventListener("input", temp); // TODO: Need to remove event
+        inpRef.addEventListener("change", temp); // TODO: Need to remove event
 
         return inpRef;
       },

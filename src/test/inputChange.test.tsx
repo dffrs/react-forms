@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { useForm } from "../form";
 
 describe("On input change", () => {
-  it("input's input event triggers form to update its values (input text field)", () => {
+  it("input's change event triggers form to update its values (input text field)", () => {
     const InputComp = () => {
       const form = useForm("test-form", {
         defaultValues: {
@@ -37,7 +37,7 @@ describe("On input change", () => {
 
     expect(input).toHaveValue("value from defaultValue");
 
-    fireEvent.input(input, { target: { value: "this is the new text" } });
+    fireEvent.change(input, { target: { value: "this is the new text" } });
 
     expect(input).toHaveValue("this is the new text");
 
