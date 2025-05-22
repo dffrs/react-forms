@@ -22,7 +22,7 @@ describe("Form Test: useWatchValue", () => {
             type="text"
             {...form.register("text-input")}
           />
-          {/* @ts-expect-error */}
+          {/* @ts-expect-error  value is unknow (for now, might improve in the future)*/}
           <span data-testid="span">{value}</span>
           <button
             data-testid="button"
@@ -62,7 +62,7 @@ describe("Form Test: useWatchValue", () => {
             type="text"
             {...form.register("text-input")}
           />
-          {/* @ts-expect-error */}
+          {/* @ts-expect-error  value is unknow (for now, might improve in the future)*/}
           <span data-testid="span">{value}</span>
           <button
             data-testid="button"
@@ -100,10 +100,10 @@ describe("Form Test: useWatchValue", () => {
           <input
             data-testid="input"
             type="text"
-            value="test"
+            defaultValue="test"
             {...form.register("text-input")}
           />
-          {/* @ts-expect-error */}
+          {/* @ts-expect-error  value is unknow (for now, might improve in the future)*/}
           <span data-testid="span">{value}</span>
           <button
             data-testid="button"

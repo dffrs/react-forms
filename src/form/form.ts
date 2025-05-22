@@ -105,11 +105,18 @@ export class Form {
         if (!input) return;
 
         // NOTE: Field must be register ONLY once.
-        if (this.internalState.isFieldRegistred(fieldName)) return;
+        // if (this.internalState.isFieldRegistred(fieldName)) {
+        //   const temp = this.internalState.registerField(fieldName, input);
+        //
+        //   console.log("debug", temp);
+        //   return;
+        // }
 
         const inpRef = this.internalState.registerField(fieldName, input);
 
-        const defaultValue = this.internalState.getDefaultValueFor(fieldName);
+        const defaultValue = this.internalState.isFieldRegistred(fieldName)
+          ? this.internalState.getValueFor(fieldName)
+          : this.internalState.getDefaultValueFor(fieldName);
 
         // NOTE: undefined is the only value that can NOT be injected into inputs. What's the point, if nothing changes ?
         if (defaultValue !== undefined) {
@@ -141,6 +148,21 @@ export class Form {
         return inpRef;
       },
     };
+  }
+
+  // TODO: injects DOM values into fields. Usefull for conditional rendering
+  injectValues() {
+    // debugger;
+    const values = this.getValues();
+
+    console.log("here", values);
+
+    Object.entries(values).forEach(([fieldName, value]) => {
+      if (fieldName !== "i-text") return;
+
+      // debugger;
+      this.setValueFor(fieldName, value);
+    });
   }
 
   getValueFor(fieldName: Register) {

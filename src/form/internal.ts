@@ -63,7 +63,7 @@ export class Internal {
   registerField<V extends HTMLInputElement>(_fieldName: Register, ref: V) {
     const fieldName = this.simplifyFieldName(_fieldName);
 
-    if (this.isFieldRegistred(fieldName)) return this.registor[fieldName];
+    // if (this.isFieldRegistred(fieldName)) return this.registor[fieldName];
 
     this.registor[fieldName] = ref;
     return ref;
