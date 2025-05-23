@@ -25,10 +25,6 @@ function App() {
     console.log("value", file);
   }, [file]);
 
-  // useEffect(() => {
-  //   console.log("text value", valueText);
-  // }, [valueText]);
-
   return (
     <>
       <h1>Inputs</h1>
@@ -51,12 +47,6 @@ function App() {
       </button>
       <button type="button" onClick={() => setOpen((e) => !e)}>
         open/close
-      </button>
-      <button
-        type="button"
-        onClick={() => console.log(form.internalState.values["i-checkbox"])}
-      >
-        fds
       </button>
       {open && (
         <div
