@@ -48,9 +48,6 @@ function App() {
       <button type="button" onClick={() => setOpen((e) => !e)}>
         open/close
       </button>
-      <button type="button" onClick={() => form.injectValues()}>
-        inject values
-      </button>
       {open && (
         <div
           style={{

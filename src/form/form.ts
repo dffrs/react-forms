@@ -57,6 +57,33 @@ export class Form {
     return resultObj;
   }
 
+  private injectDefaultValues<V extends HTMLInputElement>(
+    fieldName: Register,
+    inpRef: V,
+  ) {
+    const defaultValue = this.internalState.isFieldRegistred(fieldName)
+      ? this.internalState.getValueFor(fieldName)
+      : this.internalState.getDefaultValueFor(fieldName);
+
+    // NOTE: undefined is the only value that can NOT be injected into inputs. What's the point, if nothing changes ?
+    if (defaultValue !== undefined) {
+      switch (inpRef.type) {
+        case "file":
+          console.error(
+            `[Error-register]: default value for file inputs are not supported (YET)`,
+          );
+          break;
+        case "radio":
+        case "checkbox":
+          inpRef.defaultChecked = !!defaultValue;
+          break;
+        default:
+          inpRef.defaultValue = defaultValue as string; // TODO: Fix type
+          break;
+      }
+    }
+  }
+
   private listenToInputChanges(fieldName: Register) {
     return (ev: Event) => {
       const target = ev.target;
@@ -104,37 +131,13 @@ export class Form {
       ref: (input: V | null) => {
         if (!input) return;
 
-        // NOTE: Field must be register ONLY once.
-        // if (this.internalState.isFieldRegistred(fieldName)) {
-        //   const temp = this.internalState.registerField(fieldName, input);
-        //
-        //   console.log("debug", temp);
-        //   return;
-        // }
-
         const inpRef = this.internalState.registerField(fieldName, input);
 
-        const defaultValue = this.internalState.isFieldRegistred(fieldName)
-          ? this.internalState.getValueFor(fieldName)
-          : this.internalState.getDefaultValueFor(fieldName);
-
-        // NOTE: undefined is the only value that can NOT be injected into inputs. What's the point, if nothing changes ?
-        if (defaultValue !== undefined) {
-          switch (inpRef.type) {
-            case "file":
-              console.error(
-                `[Error-register]: default value for file inputs are not supported`,
-              );
-              break;
-            case "radio":
-            case "checkbox":
-              inpRef.defaultChecked = !!defaultValue;
-              break;
-            default:
-              inpRef.defaultValue = defaultValue as string; // TODO: Fix type
-              break;
-          }
-        }
+        // NOTE:
+        // Inject default value into field
+        // if field has been registered before, form's current value, for it, will be used
+        // otherwise, default value, specified via form's register function, will be used instead
+        this.injectDefaultValues(fieldName, inpRef);
 
         // NOTE: init values in form's `values` attribute.
         // Injects new values that were NOT specified on default values
@@ -148,21 +151,6 @@ export class Form {
         return inpRef;
       },
     };
-  }
-
-  // TODO: injects DOM values into fields. Usefull for conditional rendering
-  injectValues() {
-    // debugger;
-    const values = this.getValues();
-
-    console.log("here", values);
-
-    Object.entries(values).forEach(([fieldName, value]) => {
-      if (fieldName !== "i-text") return;
-
-      // debugger;
-      this.setValueFor(fieldName, value);
-    });
   }
 
   getValueFor(fieldName: Register) {
