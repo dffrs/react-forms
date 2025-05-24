@@ -1,2 +1,6 @@
 - Code cleanup
 - Fix TODOS
+- Add option to choose if auto-inject should be on
+- Create function to inject default Values again
+- Create function to clear inputs
+- Form validation (errors)
