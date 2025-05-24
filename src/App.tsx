@@ -8,6 +8,7 @@ function App() {
     defaultValues: {
       "i-checkbox": true,
       "i-text": "this is a text input",
+      "i-file": new File(["who cares"], "filename", { type: "text/html" }),
       "i-radio": {
         phone: true,
       },

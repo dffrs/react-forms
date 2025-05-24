@@ -43,7 +43,11 @@ export class Form {
     const encode = this.internalState.encodeFieldName;
 
     for (const i in obj) {
-      if (typeof obj[i] === "object" && !Array.isArray(obj[i])) {
+      if (
+        typeof obj[i] === "object" &&
+        !Array.isArray(obj[i]) &&
+        !(obj[i] instanceof File || obj[i] instanceof FileList)
+      ) {
         // Recursively invoking the funtion
         // until the object gets flatten
         const tempObj = this.flattenObject(obj[i]);
