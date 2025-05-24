@@ -6,7 +6,7 @@ function App() {
 
   const form = useForm("inputs", {
     defaultValues: {
-      // "i-checkbox": true,
+      "i-checkbox": true,
       "i-text": "this is a text input",
       "i-radio": {
         phone: true,
@@ -15,15 +15,10 @@ function App() {
   });
 
   const value = useWatchValue("i-checkbox", { form });
-  const file = useWatchValue("i-file", { form });
 
   useEffect(() => {
     console.log("value", value);
   }, [value]);
-
-  useEffect(() => {
-    console.log("value", file);
-  }, [file]);
 
   return (
     <>

@@ -1,3 +1,1 @@
 - Implement mechanism to re-inject values into fields (useful when there's components with conditional rendering)
-- Create tests for 'injectValue'
-- Allow for default value injection on file input

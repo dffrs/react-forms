@@ -68,11 +68,31 @@ export class Form {
     // NOTE: undefined is the only value that can NOT be injected into inputs. What's the point, if nothing changes ?
     if (defaultValue !== undefined) {
       switch (inpRef.type) {
-        case "file":
-          console.error(
-            `[Error-register]: default value for file inputs are not supported (YET)`,
-          );
+        case "file": {
+          if (
+            !(defaultValue instanceof FileList || defaultValue instanceof File)
+          ) {
+            console.error(
+              `[Error-register]: default value for file inputs must be an instance of File | FileList`,
+              typeof defaultValue,
+              defaultValue,
+            );
+            break;
+          }
+
+          const dt = new DataTransfer();
+
+          // if defaultValue == file
+          if (defaultValue instanceof File) dt.items.add(defaultValue);
+          // otherwise, it must be FileList
+          else
+            Array.from(defaultValue).forEach((file) => {
+              dt.items.add(file);
+            });
+
+          inpRef.files = dt.files;
           break;
+        }
         case "radio":
         case "checkbox":
           inpRef.defaultChecked = !!defaultValue;
