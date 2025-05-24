@@ -44,6 +44,9 @@ function App() {
       <button type="button" onClick={() => setOpen((e) => !e)}>
         open/close
       </button>
+      <button type="button" onClick={() => form.resetToDefaultValues()}>
+        reset to default value
+      </button>
       {open && (
         <div
           style={{

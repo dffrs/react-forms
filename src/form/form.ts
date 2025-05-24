@@ -84,17 +84,10 @@ export class Form {
             break;
           }
 
-          const dt = new DataTransfer();
+          const files = this.internalState.dealWithFiles(defaultValue);
+          if (!files) break;
 
-          // if defaultValue == file
-          if (defaultValue instanceof File) dt.items.add(defaultValue);
-          // otherwise, it must be FileList
-          else
-            Array.from(defaultValue).forEach((file) => {
-              dt.items.add(file);
-            });
-
-          inpRef.files = dt.files;
+          inpRef.files = files;
           break;
         }
         case "radio":
@@ -175,6 +168,35 @@ export class Form {
         return inpRef;
       },
     };
+  }
+
+  resetToDefaultValues(fieldName?: Register) {
+    const dfv = this.internalState.defaultValues;
+
+    // if fieldName was passed in, then reset only that field
+    if (fieldName) {
+      const fname = this.internalState.simplifyFieldName(fieldName);
+
+      if (!(fname in dfv)) {
+        console.error(
+          "[Error-resetToDefaultValues]: fieldName is not present in default values",
+          fname,
+          dfv,
+        );
+
+        return;
+      }
+
+      const value = dfv[fname];
+      this.setValueFor(fname, value);
+
+      return;
+    }
+
+    // otherwise, reset them all
+    Object.entries(dfv).forEach(([fieldName, value]) => {
+      this.setValueFor(fieldName, value);
+    });
   }
 
   getValueFor(fieldName: Register) {

@@ -1,3 +1,4 @@
+- Add tests to resetToDefaultValue
 - Code cleanup
 - Fix TODOS
 - Add option to choose if auto-inject should be on

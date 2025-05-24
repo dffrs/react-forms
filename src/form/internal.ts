@@ -55,6 +55,26 @@ export class Internal {
     return this.simplifyFieldName(fieldName) in this.registor;
   }
 
+  dealWithFiles(value: FileList | File) {
+    if (!(value instanceof FileList || value instanceof File)) {
+      console.error(
+        `[Error-dealWithFiles]: Injecting value (${value}) into field. Value must be Filelist | File.`,
+      );
+      return;
+    }
+
+    const dt = new DataTransfer();
+
+    // if defaultValue == file
+    if (value instanceof File) dt.items.add(value);
+    // otherwise, it must be FileList
+    else
+      Array.from(value).forEach((file) => {
+        dt.items.add(file);
+      });
+    return dt.files;
+  }
+
   ///////////////////////////////////////////////////
   //                                               //
   //     Registering and unregistering fields      //
@@ -205,15 +225,20 @@ export class Internal {
 
     // NOTE: This injects values into inputs
     switch (inpRef.type) {
-      case "file":
-        if (!(value instanceof FileList)) {
+      case "file": {
+        if (!(value instanceof FileList || value instanceof File)) {
           console.error(
             `[Error-serValueFor]: Injecting value (${value}) into field. Value must be Filelist or null.`,
           );
           break;
         }
-        inpRef.files = value; // TODO: test me. Use forms to inject a new file
+
+        const files = this.dealWithFiles(value);
+        if (!files) break;
+
+        inpRef.files = files;
         break;
+      }
 
       case "radio":
       case "checkbox":
