@@ -19,12 +19,14 @@ const SpyInternal = Spy(Internal);
 // }
 
 export type Options = {
-  defaultValues: Record<string, unknown>;
+  defaultValues?: Record<string, unknown>;
+  autoInject?: boolean;
 };
 
 export class Form {
   private name: string;
   internalState: InstanceType<typeof SpyInternal>;
+  private autoInject: boolean | undefined;
 
   constructor(name: string, opt?: Options) {
     this.name = name;
@@ -35,6 +37,8 @@ export class Form {
       this.internalState.defaultValues = flattenDefValues;
       this.internalState.copyDefValues(flattenDefValues);
     }
+
+    this.autoInject = opt?.autoInject;
   }
 
   private flattenObject(obj: Record<string, any>): Record<string, unknown> {
@@ -149,6 +153,13 @@ export class Form {
         if (!input) return;
 
         const inpRef = this.internalState.registerField(fieldName, input);
+
+        // TODO: Add tests for this
+        if (
+          this.autoInject === false &&
+          this.internalState.isFieldRegistred(fieldName)
+        )
+          return;
 
         // NOTE:
         // Inject default value into field
