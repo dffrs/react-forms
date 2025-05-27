@@ -1,5 +1,4 @@
 - Code cleanup
 - Fix TODOS
-- Add option to choose if auto-inject should be on (add tests also)
 - Create function to clear inputs
 - Form validation (errors)

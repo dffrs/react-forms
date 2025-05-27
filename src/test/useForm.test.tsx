@@ -233,4 +233,52 @@ describe("Form Tests: useForm", () => {
     fireEvent.click(radioPhone);
     fireEvent.click(btn);
   });
+
+  it("auto-inject is disabled so inputs are rendered empty initially", () => {
+    const DummyComp = () => {
+      const form = useForm("radio-form", {
+        autoInject: false,
+        defaultValues: {
+          "dummy-input": "default value",
+        },
+      });
+
+      useEffect(() => {
+        expect(form.getValues()).toEqual({
+          "dummy-input": "default value",
+        });
+      }, [form]);
+
+      return (
+        <>
+          <input
+            type="text"
+            data-testid="input"
+            {...form.register("dummy-input")}
+          />
+          <button
+            data-testid="button"
+            onClick={() => form.resetToDefaultValues()}
+          >
+            click me
+          </button>
+        </>
+      );
+    };
+    const { container } = render(<DummyComp />);
+
+    const input = container.querySelector('input[type="text"]');
+    if (input == null) throw Error("field not found");
+
+    const btn = container.querySelector('[data-testid="button"]');
+    if (btn == null) throw Error("button not found");
+
+    // initially there's no value
+    expect(input).toHaveValue("");
+
+    // call resetToDefaultValues
+    fireEvent.click(btn);
+
+    expect(input).toHaveValue("default value");
+  });
 });
