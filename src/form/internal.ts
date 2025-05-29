@@ -256,4 +256,44 @@ export class Internal {
         break;
     }
   }
+
+  clearField(_fieldName: Register) {
+    const fieldName = this.simplifyFieldName(_fieldName);
+
+    if (!(fieldName in this.registor)) {
+      console.error(
+        `[Error-clearFields]: Not possible to clear value for ${_fieldName}. It must be registered first`,
+      );
+      return;
+    }
+
+    const inpRef = this.registor[fieldName];
+
+    let v;
+    if (fieldName in this.values) v = this.values[fieldName];
+    else v = new SValue();
+
+    // NOTE: This injects values into form
+    const updateFormValues = (value: unknown) => v.setValue(value);
+
+    // NOTE: This injects values into inputs
+    switch (inpRef.type) {
+      case "file": {
+        inpRef.files = new DataTransfer().files;
+        updateFormValues(undefined);
+        break;
+      }
+
+      case "radio":
+      case "checkbox":
+        inpRef.checked = false;
+        updateFormValues(false);
+        break;
+
+      default:
+        inpRef.value = "";
+        updateFormValues(undefined);
+        break;
+    }
+  }
 }

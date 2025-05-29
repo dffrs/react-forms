@@ -181,6 +181,18 @@ export class Form {
     };
   }
 
+  clearField(fieldName: Register) {
+    this.internalState.clearField(fieldName);
+  }
+
+  clearFields() {
+    const registredFields = Object.keys(this.internalState.registor);
+
+    registredFields.forEach((fieldName) => {
+      this.clearField(fieldName);
+    });
+  }
+
   resetToDefaultValues(fieldName?: Register) {
     const dfv = this.internalState.defaultValues;
 

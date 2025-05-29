@@ -47,6 +47,9 @@ function App() {
       <button type="button" onClick={() => form.resetToDefaultValues()}>
         reset to default value
       </button>
+      <button type="button" onClick={() => form.clearFields()}>
+        clear fields
+      </button>
       {open && (
         <div
           style={{
