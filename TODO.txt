@@ -2,3 +2,5 @@
 - Fix TODOS
 - Create function to clear inputs
 - Form validation (errors)
+- Support select fields
+- Create a Controller wrap component, for custom inputs
