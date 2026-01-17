@@ -135,6 +135,46 @@ describe("Form tests: Values", () => {
     });
   });
 
+  it("registers select input", () => {
+    const InputComp = () => {
+      const form = useForm("test");
+
+      useEffect(() => {
+        expect(form.getValues()).toEqual({ ["dummy-select"]: "option1" });
+      }, [form]);
+
+      return (
+        <select {...form.register("dummy-select")}>
+          <option>option1</option>
+          <option>option2</option>
+          <option>option3</option>
+        </select>
+      );
+    };
+
+    render(<InputComp />);
+  });
+
+  it("respects selects value", () => {
+    const InputComp = () => {
+      const form = useForm("test");
+
+      useEffect(() => {
+        expect(form.getValues()).toEqual({ ["dummy-select"]: "option3" });
+      }, [form]);
+
+      return (
+        <select {...form.register("dummy-select")} value="option3">
+          <option>option1</option>
+          <option>option2</option>
+          <option>option3</option>
+        </select>
+      );
+    };
+
+    render(<InputComp />);
+  });
+
   it("respects inputs value", () => {
     const InputComp = () => {
       const form = useForm("test");
