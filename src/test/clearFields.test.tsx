@@ -98,7 +98,7 @@ describe("Form tests: clearFields", () => {
     const radio2 = getByTestId(container, "radio2");
     if (!radio2) throw Error("input not found");
 
-    const select = getByTestId(container, "radio2");
+    const select = getByTestId<HTMLSelectElement>(container, "select");
     if (!select) throw Error("input not found");
 
     const option1 = getByTestId<HTMLOptionElement>(
@@ -128,6 +128,7 @@ describe("Form tests: clearFields", () => {
     expect(checkbox).toBeChecked();
     expect(radio1).toBeChecked();
     expect(radio2).not.toBeChecked();
+    expect(select.value).toEqual("option-1");
     expect(option1.selected).toBeTruthy();
     expect(option2.selected).toBeFalsy();
     expect(option3.selected).toBeFalsy();
@@ -141,6 +142,7 @@ describe("Form tests: clearFields", () => {
     expect(checkbox).not.toBeChecked();
     expect(radio1).not.toBeChecked();
     expect(radio2).not.toBeChecked();
+    expect(select.value).toEqual("");
     expect(option1.selected).toBeFalsy();
     expect(option2.selected).toBeFalsy();
     expect(option3.selected).toBeFalsy();
@@ -239,7 +241,7 @@ describe("Form tests: clearFields", () => {
     const radio2 = getByTestId(container, "radio2");
     if (!radio2) throw Error("input not found");
 
-    const select = getByTestId(container, "radio2");
+    const select = getByTestId<HTMLSelectElement>(container, "select");
     if (!select) throw Error("input not found");
 
     const option1 = getByTestId<HTMLOptionElement>(
@@ -269,6 +271,7 @@ describe("Form tests: clearFields", () => {
     expect(checkbox).not.toBeChecked();
     expect(radio1).not.toBeChecked();
     expect(radio2).not.toBeChecked();
+    expect(select.value).toEqual("option-1");
     expect(option1.selected).toBeTruthy();
     expect(option2.selected).toBeFalsy();
     expect(option3.selected).toBeFalsy();
@@ -283,6 +286,7 @@ describe("Form tests: clearFields", () => {
     expect(checkbox).not.toBeChecked();
     expect(radio1).not.toBeChecked();
     expect(radio2).not.toBeChecked();
+    expect(select.value).toEqual("option-1");
     expect(option1.selected).toBeTruthy();
     expect(option2.selected).toBeFalsy();
     expect(option3.selected).toBeFalsy();
@@ -381,7 +385,7 @@ describe("Form tests: clearFields", () => {
     const radio2 = getByTestId(container, "radio2");
     if (!radio2) throw Error("input not found");
 
-    const select = getByTestId(container, "radio2");
+    const select = getByTestId<HTMLSelectElement>(container, "select");
     if (!select) throw Error("input not found");
 
     const option1 = getByTestId<HTMLOptionElement>(
@@ -411,6 +415,7 @@ describe("Form tests: clearFields", () => {
     expect(checkbox).not.toBeChecked();
     expect(radio1).not.toBeChecked();
     expect(radio2).not.toBeChecked();
+    expect(select.value).toEqual("option-1");
     expect(option1.selected).toBeTruthy();
     expect(option2.selected).toBeFalsy();
     expect(option3.selected).toBeFalsy();
@@ -424,6 +429,7 @@ describe("Form tests: clearFields", () => {
     expect(checkbox).not.toBeChecked();
     expect(radio1).not.toBeChecked();
     expect(radio2).not.toBeChecked();
+    expect(select.value).toEqual("option-1");
     expect(option1.selected).toBeTruthy();
     expect(option2.selected).toBeFalsy();
     expect(option3.selected).toBeFalsy();
