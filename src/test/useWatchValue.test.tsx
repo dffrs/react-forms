@@ -8,12 +8,14 @@ describe("Form Test: useWatchValue", () => {
       const form = useForm("test-form", {
         defaultValues: {
           "text-input": "value from defaultValue",
+          "select-input": "option2",
         },
       });
 
-      const value = useWatchValue("text-input", { form });
+      const inputValue = useWatchValue("text-input", { form });
+      const selectValue = useWatchValue("select-input", { form });
 
-      if (value instanceof FileList) throw Error();
+      if (inputValue instanceof FileList) throw Error();
 
       return (
         <>
@@ -22,13 +24,22 @@ describe("Form Test: useWatchValue", () => {
             type="text"
             {...form.register("text-input")}
           />
+          <select data-testid="select" {...form.register("select-input")}>
+            <option data-testid="option1">option1</option>
+            <option data-testid="option2">option2</option>
+            <option data-testid="option3">option3</option>
+          </select>
           {/* @ts-expect-error  value is unknow (for now, might improve in the future)*/}
-          <span data-testid="span">{value}</span>
+          <span data-testid="span">{inputValue}</span>
+
+          {/* @ts-expect-error  value is unknow (for now, might improve in the future)*/}
+          <span data-testid="select-span">{selectValue}</span>
           <button
             data-testid="button"
-            onClick={() =>
-              form.setValueFor("text-input", "change with set value")
-            }
+            onClick={() => {
+              form.setValueFor("text-input", "change with set value");
+              form.setValueFor("select-input", "option3");
+            }}
           >
             click
           </button>
@@ -39,21 +50,26 @@ describe("Form Test: useWatchValue", () => {
     render(<InputComp />);
     const button = screen.getByTestId("button");
     const span = screen.getByTestId("span");
+    const selectSpan = screen.getByTestId("select-span");
 
     expect(span).toHaveTextContent("value from defaultValue");
+    expect(selectSpan).toHaveTextContent("option2");
 
     fireEvent.click(button);
 
     expect(span).toHaveTextContent("change with set value");
+    expect(selectSpan).toHaveTextContent("option3");
   });
 
   it("listens to value change (no default value)", () => {
     const InputComp = () => {
       const form = useForm("test-form");
 
-      const value = useWatchValue("text-input", { form });
+      const inputValue = useWatchValue("text-input", { form });
+      const selectValue = useWatchValue("select-input", { form });
 
-      if (value instanceof FileList) throw Error();
+      if (inputValue instanceof FileList) throw Error();
+      if (selectValue instanceof FileList) throw Error();
 
       return (
         <>
@@ -62,13 +78,21 @@ describe("Form Test: useWatchValue", () => {
             type="text"
             {...form.register("text-input")}
           />
+          <select data-testid="select" {...form.register("select-input")}>
+            <option data-testid="option1">option1</option>
+            <option data-testid="option2">option2</option>
+            <option data-testid="option3">option3</option>
+          </select>
           {/* @ts-expect-error  value is unknow (for now, might improve in the future)*/}
-          <span data-testid="span">{value}</span>
+          <span data-testid="span">{inputValue}</span>
+          {/* @ts-expect-error  value is unknow (for now, might improve in the future)*/}
+          <span data-testid="select-span">{selectValue}</span>
           <button
             data-testid="button"
-            onClick={() =>
-              form.setValueFor("text-input", "change with set value")
-            }
+            onClick={() => {
+              form.setValueFor("text-input", "change with set value");
+              form.setValueFor("select-input", "option2");
+            }}
           >
             click
           </button>
@@ -79,12 +103,15 @@ describe("Form Test: useWatchValue", () => {
     render(<InputComp />);
     const button = screen.getByTestId("button");
     const span = screen.getByTestId("span");
+    const selectSpan = screen.getByTestId("select-span");
 
     expect(span).toHaveTextContent("");
+    expect(selectSpan).toHaveTextContent("option1");
 
     fireEvent.click(button);
 
     expect(span).toHaveTextContent("change with set value");
+    expect(selectSpan).toHaveTextContent("option2");
   });
 
   it("listens to value change (no default value BUT there's a value on the field)", () => {
@@ -92,8 +119,10 @@ describe("Form Test: useWatchValue", () => {
       const form = useForm("test-form");
 
       const value = useWatchValue("text-input", { form });
+      const selectValue = useWatchValue("select-input", { form });
 
       if (value instanceof FileList) throw Error();
+      if (selectValue instanceof FileList) throw Error();
 
       return (
         <>
@@ -103,13 +132,25 @@ describe("Form Test: useWatchValue", () => {
             defaultValue="test"
             {...form.register("text-input")}
           />
+          <select
+            data-testid="select"
+            defaultValue="option3"
+            {...form.register("select-input")}
+          >
+            <option data-testid="option1">option1</option>
+            <option data-testid="option2">option2</option>
+            <option data-testid="option3">option3</option>
+          </select>
           {/* @ts-expect-error  value is unknow (for now, might improve in the future)*/}
           <span data-testid="span">{value}</span>
+          {/* @ts-expect-error  value is unknow (for now, might improve in the future)*/}
+          <span data-testid="select-span">{selectValue}</span>
           <button
             data-testid="button"
-            onClick={() =>
-              form.setValueFor("text-input", "change with set value")
-            }
+            onClick={() => {
+              form.setValueFor("text-input", "change with set value");
+              form.setValueFor("select-input", "option2");
+            }}
           >
             click
           </button>
@@ -120,23 +161,32 @@ describe("Form Test: useWatchValue", () => {
     render(<InputComp />);
     const button = screen.getByTestId("button");
     const span = screen.getByTestId("span");
+    const selectSpan = screen.getByTestId("select-span");
 
     expect(span).toHaveTextContent("test");
+    expect(selectSpan).toHaveTextContent("option3");
 
     fireEvent.click(button);
 
     expect(span).toHaveTextContent("change with set value");
+    expect(selectSpan).toHaveTextContent("option2");
   });
 
   it("works with FormProvider", () => {
     const WatchComp = () => {
       const value = useWatchValue("text-input");
+      const selectValue = useWatchValue("select-input");
 
       if (value instanceof FileList) throw Error();
+      if (selectValue instanceof FileList) throw Error();
 
       return (
-        /* @ts-expect-error  fix this eventually*/
-        <span data-testid="span">{value}</span>
+        <>
+          {/* @ts-expect-error fix this eventually*/}
+          <span data-testid="span">{value}</span>
+          {/* @ts-expect-error fix this eventually*/}
+          <span data-testid="select-span">{selectValue}</span>
+        </>
       );
     };
 
@@ -151,11 +201,17 @@ describe("Form Test: useWatchValue", () => {
             value="test"
             {...form.register("text-input")}
           />
+          <select data-testid="select" {...form.register("select-input")}>
+            <option data-testid="option1">option1</option>
+            <option data-testid="option2">option2</option>
+            <option data-testid="option3">option3</option>
+          </select>
           <button
             data-testid="button"
-            onClick={() =>
-              form.setValueFor("text-input", "change with set value")
-            }
+            onClick={() => {
+              form.setValueFor("text-input", "change with set value");
+              form.setValueFor("select-input", "option3");
+            }}
           >
             click
           </button>
@@ -167,11 +223,14 @@ describe("Form Test: useWatchValue", () => {
     render(<InputComp />);
     const button = screen.getByTestId("button");
     const span = screen.getByTestId("span");
+    const selectSpan = screen.getByTestId("select-span");
 
     expect(span).toHaveTextContent("test");
+    expect(selectSpan).toHaveTextContent("option1");
 
     fireEvent.click(button);
 
     expect(span).toHaveTextContent("change with set value");
+    expect(selectSpan).toHaveTextContent("option3");
   });
 });
