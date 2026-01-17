@@ -21,6 +21,7 @@ export const SUPPORTED_INPUT_TYPES = {
   time: "time",
   url: "url",
   week: "week",
+  select: "select",
 } as const;
 
 export type InputType = keyof typeof SUPPORTED_INPUT_TYPES;

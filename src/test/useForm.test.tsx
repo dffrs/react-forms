@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "../form";
-import { fireEvent, render } from "@testing-library/react";
+import { fireEvent, getByTestId, render } from "@testing-library/react";
 import { InputType } from "./util";
 
 describe("Form Tests: useForm", () => {
@@ -164,6 +164,62 @@ describe("Form Tests: useForm", () => {
     expect(container.querySelector('input[value="email"]')).toBeChecked();
     expect(container.querySelector('input[value="phone"]')).not.toBeChecked();
     expect(container.querySelector('input[value="mail"]')).not.toBeChecked();
+  });
+
+  it("default value for select input", () => {
+    const InputComp = () => {
+      const form = useForm("test", {
+        defaultValues: {
+          "dummy-select": "option-3",
+        },
+      });
+
+      useEffect(() => {
+        expect(form.getValues()).toEqual({ ["dummy-select"]: "option-3" });
+      }, [form]);
+
+      return (
+        <select data-testid="select" {...form.register("dummy-select")}>
+          <option data-testid="select-option-1" value="option-1">
+            option 1
+          </option>
+          <option data-testid="select-option-2" value="option-2">
+            option 2
+          </option>
+          <option data-testid="select-option-3" value="option-3">
+            option 3
+          </option>
+        </select>
+      );
+    };
+
+    const { container } = render(<InputComp />);
+
+    const select = getByTestId<HTMLSelectElement>(container, "select");
+    if (!select) throw Error("input not found");
+
+    const option1 = getByTestId<HTMLOptionElement>(
+      container,
+      "select-option-1",
+    );
+    if (!option1) throw Error("option not found");
+
+    const option2 = getByTestId<HTMLOptionElement>(
+      container,
+      "select-option-2",
+    );
+    if (!option2) throw Error("option not found");
+
+    const option3 = getByTestId<HTMLOptionElement>(
+      container,
+      "select-option-3",
+    );
+    if (!option3) throw Error("option not found");
+
+    expect(select.value).toEqual("option-3");
+    expect(option1.selected).toBeFalsy();
+    expect(option2.selected).toBeFalsy();
+    expect(option3.selected).toBeTruthy();
   });
 
   it("only one true value when clicking on radio fields", () => {

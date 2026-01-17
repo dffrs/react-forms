@@ -13,6 +13,7 @@ describe("Form tests: clearFields", () => {
           "dummy-radio": {
             opt1: true,
           },
+          "dummy-select": "option-1",
         },
       });
 
@@ -23,6 +24,7 @@ describe("Form tests: clearFields", () => {
           ["dummy-checkbox"]: true,
           ["dummy-radio.opt1"]: true,
           ["dummy-radio.opt2"]: false,
+          ["dummy-select"]: "option-1",
         });
       }, [form]);
 
@@ -64,6 +66,17 @@ describe("Form tests: clearFields", () => {
             {...form.register({ groupName: "dummy-radio", element: "opt2" })}
           />
           <label htmlFor="radio2">Option 2</label>
+          <select data-testid="select" {...form.register("dummy-select")}>
+            <option data-testid="select-option-1" value="option-1">
+              option 1
+            </option>
+            <option data-testid="select-option-2" value="option-2">
+              option 2
+            </option>
+            <option data-testid="select-option-3" value="option-3">
+              option 3
+            </option>
+          </select>
         </>
       );
     };
@@ -85,6 +98,27 @@ describe("Form tests: clearFields", () => {
     const radio2 = getByTestId(container, "radio2");
     if (!radio2) throw Error("input not found");
 
+    const select = getByTestId<HTMLSelectElement>(container, "select");
+    if (!select) throw Error("input not found");
+
+    const option1 = getByTestId<HTMLOptionElement>(
+      container,
+      "select-option-1",
+    );
+    if (!option1) throw Error("option not found");
+
+    const option2 = getByTestId<HTMLOptionElement>(
+      container,
+      "select-option-2",
+    );
+    if (!option2) throw Error("option not found");
+
+    const option3 = getByTestId<HTMLOptionElement>(
+      container,
+      "select-option-3",
+    );
+    if (!option3) throw Error("option not found");
+
     const button = getByTestId(container, "button");
     if (!button) throw Error("button not found");
 
@@ -94,6 +128,10 @@ describe("Form tests: clearFields", () => {
     expect(checkbox).toBeChecked();
     expect(radio1).toBeChecked();
     expect(radio2).not.toBeChecked();
+    expect(select.value).toEqual("option-1");
+    expect(option1.selected).toBeTruthy();
+    expect(option2.selected).toBeFalsy();
+    expect(option3.selected).toBeFalsy();
 
     // click on button to clear all fields
     fireEvent.click(button);
@@ -104,6 +142,10 @@ describe("Form tests: clearFields", () => {
     expect(checkbox).not.toBeChecked();
     expect(radio1).not.toBeChecked();
     expect(radio2).not.toBeChecked();
+    expect(select.value).toEqual("");
+    expect(option1.selected).toBeFalsy();
+    expect(option2.selected).toBeFalsy();
+    expect(option3.selected).toBeFalsy();
   });
 
   it("clearField (with fieldName) clears field", () => {
@@ -122,6 +164,7 @@ describe("Form tests: clearFields", () => {
           ["dummy-checkbox"]: false,
           ["dummy-radio.opt1"]: false,
           ["dummy-radio.opt2"]: false,
+          ["dummy-select"]: "option-1",
         });
       }, [form]);
 
@@ -166,6 +209,17 @@ describe("Form tests: clearFields", () => {
             {...form.register({ groupName: "dummy-radio", element: "opt2" })}
           />
           <label htmlFor="radio2">Option 2</label>
+          <select data-testid="select" {...form.register("dummy-select")}>
+            <option data-testid="select-option-1" value="option-1">
+              option 1
+            </option>
+            <option data-testid="select-option-2" value="option-2">
+              option 2
+            </option>
+            <option data-testid="select-option-3" value="option-3">
+              option 3
+            </option>
+          </select>
         </>
       );
     };
@@ -187,6 +241,27 @@ describe("Form tests: clearFields", () => {
     const radio2 = getByTestId(container, "radio2");
     if (!radio2) throw Error("input not found");
 
+    const select = getByTestId<HTMLSelectElement>(container, "select");
+    if (!select) throw Error("input not found");
+
+    const option1 = getByTestId<HTMLOptionElement>(
+      container,
+      "select-option-1",
+    );
+    if (!option1) throw Error("option not found");
+
+    const option2 = getByTestId<HTMLOptionElement>(
+      container,
+      "select-option-2",
+    );
+    if (!option2) throw Error("option not found");
+
+    const option3 = getByTestId<HTMLOptionElement>(
+      container,
+      "select-option-3",
+    );
+    if (!option3) throw Error("option not found");
+
     const button = getByTestId(container, "button");
     if (!button) throw Error("button not found");
 
@@ -196,6 +271,10 @@ describe("Form tests: clearFields", () => {
     expect(checkbox).not.toBeChecked();
     expect(radio1).not.toBeChecked();
     expect(radio2).not.toBeChecked();
+    expect(select.value).toEqual("option-1");
+    expect(option1.selected).toBeTruthy();
+    expect(option2.selected).toBeFalsy();
+    expect(option3.selected).toBeFalsy();
 
     // click on button to clear dummy-input
     fireEvent.click(button);
@@ -207,6 +286,10 @@ describe("Form tests: clearFields", () => {
     expect(checkbox).not.toBeChecked();
     expect(radio1).not.toBeChecked();
     expect(radio2).not.toBeChecked();
+    expect(select.value).toEqual("option-1");
+    expect(option1.selected).toBeTruthy();
+    expect(option2.selected).toBeFalsy();
+    expect(option3.selected).toBeFalsy();
   });
 
   it("clearField does nothing if input does not exist", () => {
@@ -225,6 +308,7 @@ describe("Form tests: clearFields", () => {
           ["dummy-checkbox"]: false,
           ["dummy-radio.opt1"]: false,
           ["dummy-radio.opt2"]: false,
+          ["dummy-select"]: "option-1",
         });
       }, [form]);
 
@@ -269,6 +353,17 @@ describe("Form tests: clearFields", () => {
             {...form.register({ groupName: "dummy-radio", element: "opt2" })}
           />
           <label htmlFor="radio2">Option 2</label>
+          <select data-testid="select" {...form.register("dummy-select")}>
+            <option data-testid="select-option-1" value="option-1">
+              option 1
+            </option>
+            <option data-testid="select-option-2" value="option-2">
+              option 2
+            </option>
+            <option data-testid="select-option-3" value="option-3">
+              option 3
+            </option>
+          </select>
         </>
       );
     };
@@ -290,6 +385,27 @@ describe("Form tests: clearFields", () => {
     const radio2 = getByTestId(container, "radio2");
     if (!radio2) throw Error("input not found");
 
+    const select = getByTestId<HTMLSelectElement>(container, "select");
+    if (!select) throw Error("input not found");
+
+    const option1 = getByTestId<HTMLOptionElement>(
+      container,
+      "select-option-1",
+    );
+    if (!option1) throw Error("option not found");
+
+    const option2 = getByTestId<HTMLOptionElement>(
+      container,
+      "select-option-2",
+    );
+    if (!option2) throw Error("option not found");
+
+    const option3 = getByTestId<HTMLOptionElement>(
+      container,
+      "select-option-3",
+    );
+    if (!option3) throw Error("option not found");
+
     const button = getByTestId(container, "button");
     if (!button) throw Error("button not found");
 
@@ -299,6 +415,10 @@ describe("Form tests: clearFields", () => {
     expect(checkbox).not.toBeChecked();
     expect(radio1).not.toBeChecked();
     expect(radio2).not.toBeChecked();
+    expect(select.value).toEqual("option-1");
+    expect(option1.selected).toBeTruthy();
+    expect(option2.selected).toBeFalsy();
+    expect(option3.selected).toBeFalsy();
 
     // click on button to clear non-existing field
     fireEvent.click(button);
@@ -309,5 +429,9 @@ describe("Form tests: clearFields", () => {
     expect(checkbox).not.toBeChecked();
     expect(radio1).not.toBeChecked();
     expect(radio2).not.toBeChecked();
+    expect(select.value).toEqual("option-1");
+    expect(option1.selected).toBeTruthy();
+    expect(option2.selected).toBeFalsy();
+    expect(option3.selected).toBeFalsy();
   });
 });

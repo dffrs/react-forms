@@ -1,6 +1,6 @@
 import { Spy } from "@dffrs/spy";
 import { Internal } from "./internal";
-import { Register } from "./types";
+import { CustomSelect, Register } from "./types";
 
 const SpyInternal = Spy(Internal);
 
@@ -65,7 +65,7 @@ export class Form {
     return resultObj;
   }
 
-  private injectDefaultValues<V extends HTMLInputElement>(
+  private injectDefaultValues<V extends HTMLInputElement | CustomSelect>(
     fieldName: Register,
     inpRef: V,
   ) {
@@ -98,6 +98,24 @@ export class Form {
         case "checkbox":
           inpRef.defaultChecked = !!defaultValue;
           break;
+        case "select-one": {
+          const selectDefaulValue = Array.isArray(defaultValue)
+            ? defaultValue[0]
+            : String(defaultValue);
+
+          // NOTE:
+          // if we ONLY inject 'defaultValue', 'value' would NOT be in-sync (would have the first select's option as 'value')
+          // Solution ? Assign 'selectDefaulValue' to it
+          inpRef.defaultValue = selectDefaulValue;
+          inpRef.value = selectDefaulValue;
+          break;
+        }
+        // FIX: ONE DAY MAYBE
+        case "select-multiple": {
+          throw Error(
+            "[Error-injectDefaultValues]: select-multiple are not supported",
+          );
+        }
         default:
           inpRef.defaultValue = defaultValue as string; // TODO: Fix type
           break;
@@ -109,9 +127,14 @@ export class Form {
     return (ev: Event) => {
       const target = ev.target;
 
-      if (!(target instanceof HTMLInputElement)) {
+      if (
+        !(
+          target instanceof HTMLInputElement ||
+          target instanceof HTMLSelectElement
+        )
+      ) {
         console.error(
-          "[Error-listenToInputChanges]: Only input elements can be registered",
+          "[Error-listenToInputChanges]: Only input & select elements can be registered",
         );
         return;
       }
@@ -138,7 +161,7 @@ export class Form {
     return this.name;
   }
 
-  register<V extends HTMLInputElement>(fieldName: Register) {
+  register<V extends HTMLInputElement | CustomSelect>(fieldName: Register) {
     const props =
       typeof fieldName === "string"
         ? { name: fieldName }
