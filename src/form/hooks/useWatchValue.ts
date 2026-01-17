@@ -10,10 +10,7 @@ type Opts = {
 export const useWatchValue = (fieldName: Register, opts?: Opts) => {
   const form = useFormContext(opts?.form);
 
-  const _fieldName =
-    typeof fieldName === "string"
-      ? fieldName
-      : form.internalState.encodeFieldName(fieldName);
+  const _fieldName = form.internalState.simplifyFieldName(fieldName);
 
   const [value, setValue] = useState(() => form.getValueFor(_fieldName));
 
