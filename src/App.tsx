@@ -61,6 +61,14 @@ function App() {
           }}
         >
           <div>
+            <h3>Select</h3>
+            <select {...form.register("i-select")}>
+              <option value="option-1">option 1</option>
+              <option value="option-2">option 2</option>
+              <option value="option-3">option 3</option>
+            </select>
+          </div>
+          <div>
             <h3>Text</h3>
             <input
               type="text"
