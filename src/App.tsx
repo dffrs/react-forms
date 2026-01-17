@@ -12,6 +12,7 @@ function App() {
       "i-radio": {
         phone: true,
       },
+      "i-select": "option-1",
     },
   });
 
