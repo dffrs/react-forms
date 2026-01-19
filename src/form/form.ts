@@ -170,10 +170,23 @@ export class Form {
             value: fieldName.element,
           };
 
+    const listener = this.listenToInputChanges(fieldName);
+
     return {
       ...props,
       ref: (input: V | null) => {
-        if (!input) return;
+        // NOTE: React calls ref with null on unmount or ref change
+        // This means that we have an oportunity to clean up 'listener'
+        // (it still has the same reference at this point)
+        if (!input) {
+          if (!this.internalState.isFieldRegistred(fieldName)) return;
+          const fn = this.internalState.simplifyFieldName(fieldName);
+
+          const inputRef = this.internalState.registor[fn];
+
+          inputRef.removeEventListener("change", listener);
+          return;
+        }
 
         const inpRef = this.internalState.registerField(fieldName, input);
 
@@ -195,9 +208,7 @@ export class Form {
         // Important to do this AFTER injecting default values (`values` will take those into consideration)
         this.internalState.initValueFor(fieldName, inpRef);
 
-        const temp = this.listenToInputChanges(fieldName);
-
-        inpRef.addEventListener("change", temp); // TODO: Need to remove event
+        inpRef.addEventListener("change", listener); // TODO: Need to remove event
 
         return inpRef;
       },
