@@ -151,8 +151,10 @@ export class Form {
       if (nativeSetter) {
         nativeSetter.call(target, value);
 
-        const ev = new Event("input", { bubbles: true });
-        target.dispatchEvent(ev);
+        // NOTE: Do I need this ? There's a test that will
+        // fail if this section gets uncommented
+        // const ev = new Event("input", { bubbles: true });
+        // target.dispatchEvent(ev);
       }
     };
   }

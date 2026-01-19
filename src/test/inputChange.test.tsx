@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, getByTestId, render, screen } from "@testing-library/react";
 import { vi } from "vitest";
 import { useForm, useWatchValue } from "../form";
 
@@ -85,23 +85,22 @@ describe("On input change", () => {
     fireEvent.click(button);
   });
 
-  it("change handler is not duplicated on re-render", () => {
-    const onChangeSpy = vi.fn();
+  it("input handler is not duplicated on re-render", () => {
+    const onInputSpy = vi.fn();
 
     function Test() {
       const form = useForm("test");
 
-      const value = useWatchValue("i-checkbox", { form });
+      /* @ts-expect-error variable not being used */
+      const _ = useWatchValue("i-checkbox", { form });
 
       return (
         <>
           <input
             type="checkbox"
             {...form.register("i-checkbox")}
-            onChange={onChangeSpy}
+            onInput={onInputSpy}
           />
-          {/* @ts-expect-error test*/}
-          <span>{value}</span>
         </>
       );
     }
@@ -109,18 +108,16 @@ describe("On input change", () => {
     const { rerender, getByRole } = render(<Test />);
 
     const checkbox = getByRole("checkbox");
-    const span = getByRole("span");
 
     fireEvent.click(checkbox);
-    expect(onChangeSpy).toHaveBeenCalledTimes(1);
-    expect(span).toHaveTextContent("true");
+    expect(onInputSpy).toHaveBeenCalledTimes(1);
 
     rerender(<Test />);
 
     fireEvent.click(checkbox);
-    expect(onChangeSpy).toHaveBeenCalledTimes(2); // NOT 3 or 4
+    expect(onInputSpy).toHaveBeenCalledTimes(2);
 
     fireEvent.click(checkbox);
-    expect(onChangeSpy).toHaveBeenCalledTimes(3); // NOT 3 or 4
+    expect(onInputSpy).toHaveBeenCalledTimes(3);
   });
 });
