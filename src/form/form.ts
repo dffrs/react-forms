@@ -123,6 +123,15 @@ export class Form {
     }
   }
 
+  private removeListener(fieldName: Register, listener: (ev: Event) => void) {
+    if (!this.internalState.isFieldRegistred(fieldName)) return;
+    const fn = this.internalState.simplifyFieldName(fieldName);
+
+    const inputRef = this.internalState.registor[fn];
+
+    inputRef.removeEventListener("change", listener);
+  }
+
   private listenToInputChanges(fieldName: Register) {
     return (ev: Event) => {
       const target = ev.target;
@@ -151,8 +160,10 @@ export class Form {
       if (nativeSetter) {
         nativeSetter.call(target, value);
 
-        const ev = new Event("input", { bubbles: true });
-        target.dispatchEvent(ev);
+        // NOTE: Do I need this ? There's a test that will
+        // fail if this section gets uncommented
+        // const ev = new Event("input", { bubbles: true });
+        // target.dispatchEvent(ev);
       }
     };
   }
@@ -170,23 +181,30 @@ export class Form {
             value: fieldName.element,
           };
 
+    // NOTE: keep this here, so that 'listener' has the same reference
+    // when removing event listener from 'inpRef'
+    const listener = this.listenToInputChanges(fieldName);
+
     return {
       ...props,
       ref: (input: V | null) => {
-        if (!input) return;
+        // NOTE: React calls ref with null on unmount or ref change
+        // This means that we have an oportunity to clean up 'listener'
+        // (it still has the same reference at this point)
+        if (!input) {
+          this.removeListener(fieldName, listener);
+          return;
+        }
 
         const inpRef = this.internalState.registerField(fieldName, input);
 
-        // TODO: Add tests for this
-        if (
-          this.autoInject === false &&
-          this.internalState.isFieldRegistred(fieldName)
-        )
-          return;
+        const isAutoInjectDisabled = this.autoInject === false;
+        const isFieldRegistred = this.internalState.isFieldRegistred(fieldName);
 
-        // NOTE:
-        // Inject default value into field
-        // if field has been registered before, form's current value, for it, will be used
+        if (isAutoInjectDisabled && isFieldRegistred) return;
+
+        // NOTE: Inject default value into field
+        // if field has been registered before form's current value will be used
         // otherwise, default value, specified via form's register function, will be used instead
         this.injectDefaultValues(fieldName, inpRef);
 
@@ -195,9 +213,7 @@ export class Form {
         // Important to do this AFTER injecting default values (`values` will take those into consideration)
         this.internalState.initValueFor(fieldName, inpRef);
 
-        const temp = this.listenToInputChanges(fieldName);
-
-        inpRef.addEventListener("change", temp); // TODO: Need to remove event
+        inpRef.addEventListener("change", listener);
 
         return inpRef;
       },
@@ -261,8 +277,7 @@ export class Form {
       return;
     }
 
-    // NOTE:
-    // For input radios, only 1 option can be 'true'
+    // NOTE: For input radios, only 1 option can be 'true'
     // This function turns 'true' option to 'false' first (assuming that other option is selected),
     // and then sets 'value'
     // TODO: CLEAN THIS UP

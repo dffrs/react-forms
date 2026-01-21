@@ -1,5 +1,6 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { useForm } from "../form";
+import { fireEvent, getByTestId, render, screen } from "@testing-library/react";
+import { vi } from "vitest";
+import { useForm, useWatchValue } from "../form";
 
 describe("On input change", () => {
   it("input's change event triggers form to update its values (input text field)", () => {
@@ -82,5 +83,41 @@ describe("On input change", () => {
     expect(input).not.toBeChecked();
 
     fireEvent.click(button);
+  });
+
+  it("input handler is not duplicated on re-render", () => {
+    const onInputSpy = vi.fn();
+
+    function Test() {
+      const form = useForm("test");
+
+      /* @ts-expect-error variable not being used */
+      const _ = useWatchValue("i-checkbox", { form });
+
+      return (
+        <>
+          <input
+            type="checkbox"
+            {...form.register("i-checkbox")}
+            onInput={onInputSpy}
+          />
+        </>
+      );
+    }
+
+    const { rerender, getByRole } = render(<Test />);
+
+    const checkbox = getByRole("checkbox");
+
+    fireEvent.click(checkbox);
+    expect(onInputSpy).toHaveBeenCalledTimes(1);
+
+    rerender(<Test />);
+
+    fireEvent.click(checkbox);
+    expect(onInputSpy).toHaveBeenCalledTimes(2);
+
+    fireEvent.click(checkbox);
+    expect(onInputSpy).toHaveBeenCalledTimes(3);
   });
 });
