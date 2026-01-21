@@ -157,6 +157,7 @@ export class Form {
         "value",
       )?.set;
 
+      // NOTE: do i need this ??
       if (nativeSetter) {
         nativeSetter.call(target, value);
 
@@ -218,6 +219,13 @@ export class Form {
         return inpRef;
       },
     };
+  }
+
+  getInputRef(fieldName: Register) {
+    if (!this.internalState.isFieldRegistred(fieldName)) return;
+    const fn = this.internalState.simplifyFieldName(fieldName);
+
+    return this.internalState.registor[fn];
   }
 
   clearField(fieldName: Register) {
