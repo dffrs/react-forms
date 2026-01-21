@@ -19,8 +19,9 @@ jobs:
         with:
           node-version: "18"
 
+      # use npm install for now. Later use npm ci
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Run tests
         run: npm test
