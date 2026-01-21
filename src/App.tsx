@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useForm, useWatchValue } from "./form";
+import { Controller, useForm, useWatchValue } from "./form";
 
 function App() {
   const [open, setOpen] = useState(() => true);
@@ -16,7 +16,7 @@ function App() {
     },
   });
 
-  const value = useWatchValue("i-checkbox", { form });
+  const value = useWatchValue("i-text", { form });
 
   useEffect(() => {
     console.log("value", value);
@@ -120,6 +120,17 @@ function App() {
             <h3>File</h3>
             <input type="file" id="fileId" {...form.register("i-file")} />
             <label htmlFor="fileId">Test</label>
+          </div>
+          <div>
+            <h3>Textarea</h3>
+            <Controller fieldName="i-textarea" form={form}>
+              {({ ref, value }) => (
+                <>
+                  <input type="text" ref={ref} />
+                  <span>{value}</span>
+                </>
+              )}
+            </Controller>
           </div>
         </div>
       )}

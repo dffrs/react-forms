@@ -139,7 +139,8 @@ export class Form {
       if (
         !(
           target instanceof HTMLInputElement ||
-          target instanceof HTMLSelectElement
+          target instanceof HTMLSelectElement ||
+          target instanceof HTMLTextAreaElement
         )
       ) {
         console.error(
@@ -173,7 +174,9 @@ export class Form {
     return this.name;
   }
 
-  register<V extends HTMLInputElement | CustomSelect>(fieldName: Register) {
+  register<V extends HTMLInputElement | CustomSelect | HTMLTextAreaElement>(
+    fieldName: Register,
+  ) {
     const props =
       typeof fieldName === "string"
         ? { name: fieldName }
@@ -194,7 +197,7 @@ export class Form {
         // (it still has the same reference at this point)
         if (!input) {
           this.removeListener(fieldName, listener);
-          return;
+          return null;
         }
 
         const inpRef = this.internalState.registerField(fieldName, input);
@@ -202,7 +205,7 @@ export class Form {
         const isAutoInjectDisabled = this.autoInject === false;
         const isFieldRegistred = this.internalState.isFieldRegistred(fieldName);
 
-        if (isAutoInjectDisabled && isFieldRegistred) return;
+        if (isAutoInjectDisabled && isFieldRegistred) return null;
 
         // NOTE: Inject default value into field
         // if field has been registered before form's current value will be used
