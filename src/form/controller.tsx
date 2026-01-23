@@ -6,7 +6,7 @@ import { CustomSelect, Register } from "./types";
 type Props = {
   fieldName: Register;
   form?: Form;
-  // TODO: Provide 'ref' and maybe 'onChange'
+  // TODO: Provide 'onChange'
   children: (args: {
     ref: (
       input: HTMLInputElement | CustomSelect | HTMLTextAreaElement | null,
@@ -18,7 +18,6 @@ type Props = {
 export const Controller = ({ fieldName, form, children }: Props) => {
   const _form = useFormContext(form);
 
-  // NOTE: this won't work. I'm getting a ref for a field that I have NOT register before...
   return children({
     ref: _form.register(fieldName)["ref"],
     value: useWatchValue(fieldName, { form: _form }),
