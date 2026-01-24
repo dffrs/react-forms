@@ -245,25 +245,19 @@ export class Form {
       return;
     }
 
-    // NOTE: For input radios, only 1 option can be 'true'
-    // This function turns 'true' option to 'false' first (assuming that other option is selected),
-    // and then sets 'value'
-    // TODO: CLEAN THIS UP
-    Object.keys(this.getValues())
-      .filter((inputFieldNames) => {
-        if (
-          !inputFieldNames.includes(
-            fieldName.groupName + this.internalState.getDelimiter(),
-          )
-        )
-          return;
-        if (this.getValueFor(inputFieldNames) !== true) return;
+    // NOTE: deal with radio inputs
+    const keysOfFormValues = Object.keys(this.getValues());
+    const partialFieldName =
+      fieldName.groupName + this.internalState.getDelimiter();
 
-        return inputFieldNames;
-      })
-      .forEach((fieldsToReset) => {
-        this.internalState.setValueFor(fieldsToReset, false);
-      });
+    // reset radio input (every option is set to 'false')
+    for (const key of keysOfFormValues) {
+      if (!key.includes(partialFieldName)) continue;
+      if (this.getValueFor(key) !== true) continue;
+
+      // only set the selected option to false
+      this.internalState.setValueFor(key, false);
+    }
 
     this.internalState.setValueFor(fieldName, value);
   }
