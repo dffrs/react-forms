@@ -4,3 +4,4 @@ export type Register = SimpleReg | GroupReg;
 export type CustomSelect = HTMLSelectElement & {
   defaultValue?: React.HTMLAttributes<HTMLSelectElement>["defaultValue"];
 };
+export type FormRefs = HTMLInputElement | CustomSelect | HTMLTextAreaElement;

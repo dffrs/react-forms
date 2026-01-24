@@ -1,5 +1,5 @@
 import { Spy } from "@dffrs/spy";
-import { CustomSelect, GroupReg, Register, SimpleReg } from "./types";
+import { FormRefs, GroupReg, Register, SimpleReg } from "./types";
 
 class Value<V> {
   value: V | undefined;
@@ -15,7 +15,7 @@ class Value<V> {
 const SValue = Spy(Value);
 
 export class Internal {
-  registor: Record<string, HTMLInputElement | CustomSelect>;
+  registor: Record<string, FormRefs>;
   defaultValues: Record<string, unknown>;
   values: Record<string, InstanceType<typeof SValue>>;
 
@@ -80,10 +80,7 @@ export class Internal {
   //     Registering and unregistering fields      //
   //                                               //
   ///////////////////////////////////////////////////
-  registerField<V extends HTMLInputElement | CustomSelect>(
-    _fieldName: Register,
-    ref: V,
-  ) {
+  registerField<V extends FormRefs>(_fieldName: Register, ref: V) {
     const fieldName = this.simplifyFieldName(_fieldName);
 
     // if (this.isFieldRegistred(fieldName)) return this.registor[fieldName];
@@ -138,10 +135,7 @@ export class Internal {
 
   // NOTE: Creates  a new entry, on form's values, for a field.
   // This is usefull for fields that were NOT specified on default values
-  initValueFor<V extends HTMLInputElement | CustomSelect>(
-    _fieldName: Register,
-    input: V,
-  ) {
+  initValueFor<V extends FormRefs>(_fieldName: Register, input: V) {
     const fieldName = this.simplifyFieldName(_fieldName);
 
     let v;
@@ -153,14 +147,24 @@ export class Internal {
     this.values[fieldName] = v;
   }
 
-  getValueFromInput<V extends HTMLInputElement | CustomSelect>(input: V) {
+  getValueFromInput<V extends FormRefs>(input: V) {
     const ref = input;
 
     switch (ref.type) {
       case "file":
+        if (!(ref instanceof HTMLInputElement))
+          throw Error(
+            `[Error-getValueFromInput]: ref is not an instance of HTMLInputElement`,
+          );
+
         return ref.files;
       case "radio":
       case "checkbox":
+        if (!(ref instanceof HTMLInputElement))
+          throw Error(
+            `[Error-getValueFromInput]: ref is not an instance of HTMLInputElement`,
+          );
+
         return ref.checked;
 
       case "number":
@@ -231,6 +235,11 @@ export class Internal {
     // NOTE: This injects values into inputs
     switch (inpRef.type) {
       case "file": {
+        if (!(inpRef instanceof HTMLInputElement))
+          throw Error(
+            `[Error-setValueFor]: ref is not an instance of HTMLInputElement`,
+          );
+
         if (!(value instanceof FileList || value instanceof File)) {
           console.error(
             `[Error-serValueFor]: Injecting value (${value}) into field. Value must be Filelist or null.`,
@@ -247,6 +256,11 @@ export class Internal {
 
       case "radio":
       case "checkbox":
+        if (!(inpRef instanceof HTMLInputElement))
+          throw Error(
+            `[Error-setValueFor]: ref is not an instance of HTMLInputElement`,
+          );
+
         if (typeof value !== "boolean") {
           console.error(
             `[Error-serValueFor]: Injecting value (${value}) into field. Value must be boolean.`,
@@ -284,6 +298,11 @@ export class Internal {
     // NOTE: This injects values into inputs
     switch (inpRef.type) {
       case "file": {
+        if (!(inpRef instanceof HTMLInputElement))
+          throw Error(
+            `[Error-clearFields]: ref is not an instance of HTMLInputElement`,
+          );
+
         inpRef.files = new DataTransfer().files;
         updateFormValues(undefined);
         break;
@@ -291,6 +310,11 @@ export class Internal {
 
       case "radio":
       case "checkbox":
+        if (!(inpRef instanceof HTMLInputElement))
+          throw Error(
+            `[Error-clearFields]: ref is not an instance of HTMLInputElement`,
+          );
+
         inpRef.checked = false;
         updateFormValues(false);
         break;

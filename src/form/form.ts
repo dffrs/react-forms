@@ -1,22 +1,9 @@
 import { Spy } from "@dffrs/spy";
 import { Internal } from "./internal";
-import { CustomSelect, Register } from "./types";
+import { FormRefs, Register } from "./types";
+import { ChangeEvent } from "react";
 
 const SpyInternal = Spy(Internal);
-
-// function AfterMethod(_: any, __: string, descriptor: PropertyDescriptor) {
-//   const originalMethod = descriptor.value;
-//
-//   descriptor.value = function (...args: any[]) {
-//     // Call the original method
-//     const result = originalMethod.apply(this, args);
-//
-//     // Return the original result if you want to keep it unchanged
-//     return result;
-//   };
-//
-//   return descriptor;
-// }
 
 export type Options = {
   defaultValues?: Record<string, unknown>;
@@ -65,7 +52,7 @@ export class Form {
     return resultObj;
   }
 
-  private injectDefaultValues<V extends HTMLInputElement | CustomSelect>(
+  private injectDefaultValues<V extends FormRefs>(
     fieldName: Register,
     inpRef: V,
   ) {
@@ -77,11 +64,16 @@ export class Form {
     if (defaultValue !== undefined) {
       switch (inpRef.type) {
         case "file": {
+          if (!(inpRef instanceof HTMLInputElement))
+            throw Error(
+              `[Error-injectDefaultValues]: inputRef is not an instance of HTMLInputElement`,
+            );
+
           if (
             !(defaultValue instanceof FileList || defaultValue instanceof File)
           ) {
             console.error(
-              `[Error-register]: default value for file inputs must be an instance of File | FileList`,
+              `[Error-injectDefaultValues]: default value for file inputs must be an instance of File | FileList`,
               typeof defaultValue,
               defaultValue,
             );
@@ -96,6 +88,11 @@ export class Form {
         }
         case "radio":
         case "checkbox":
+          if (!(inpRef instanceof HTMLInputElement))
+            throw Error(
+              `[Error-injectDefaultValues]: inputRef is not an instance of HTMLInputElement`,
+            );
+
           inpRef.defaultChecked = !!defaultValue;
           break;
         case "select-one": {
@@ -103,8 +100,7 @@ export class Form {
             ? defaultValue[0]
             : String(defaultValue);
 
-          // NOTE:
-          // if we ONLY inject 'defaultValue', 'value' would NOT be in-sync (would have the first select's option as 'value')
+          // NOTE: if we ONLY inject 'defaultValue', 'value' would NOT be in-sync (would have the first select's option as 'value')
           // Solution ? Assign 'selectDefaulValue' to it
           inpRef.defaultValue = selectDefaulValue;
           inpRef.value = selectDefaulValue;
@@ -123,56 +119,14 @@ export class Form {
     }
   }
 
-  private removeListener(fieldName: Register, listener: (ev: Event) => void) {
-    if (!this.internalState.isFieldRegistred(fieldName)) return;
-    const fn = this.internalState.simplifyFieldName(fieldName);
-
-    const inputRef = this.internalState.registor[fn];
-
-    inputRef.removeEventListener("change", listener);
-  }
-
-  private listenToInputChanges(fieldName: Register) {
-    return (ev: Event) => {
-      const target = ev.target;
-
-      if (
-        !(
-          target instanceof HTMLInputElement ||
-          target instanceof HTMLSelectElement
-        )
-      ) {
-        console.error(
-          "[Error-listenToInputChanges]: Only input & select elements can be registered",
-        );
-        return;
-      }
-
-      // get value from the input and update forms
-      const value = this.internalState.getValueFromInput(target);
-      this.setValueFor(fieldName, value);
-
-      const nativeSetter = Object.getOwnPropertyDescriptor(
-        Object.getPrototypeOf(target),
-        "value",
-      )?.set;
-
-      if (nativeSetter) {
-        nativeSetter.call(target, value);
-
-        // NOTE: Do I need this ? There's a test that will
-        // fail if this section gets uncommented
-        // const ev = new Event("input", { bubbles: true });
-        // target.dispatchEvent(ev);
-      }
-    };
-  }
-
   getName() {
     return this.name;
   }
 
-  register<V extends HTMLInputElement | CustomSelect>(fieldName: Register) {
+  register<V extends FormRefs>(
+    fieldName: Register,
+    opts?: { onChange?: (ev: ChangeEvent<V>) => void },
+  ) {
     const props =
       typeof fieldName === "string"
         ? { name: fieldName }
@@ -181,10 +135,6 @@ export class Form {
             value: fieldName.element,
           };
 
-    // NOTE: keep this here, so that 'listener' has the same reference
-    // when removing event listener from 'inpRef'
-    const listener = this.listenToInputChanges(fieldName);
-
     return {
       ...props,
       ref: (input: V | null) => {
@@ -192,8 +142,7 @@ export class Form {
         // This means that we have an oportunity to clean up 'listener'
         // (it still has the same reference at this point)
         if (!input) {
-          this.removeListener(fieldName, listener);
-          return;
+          return null;
         }
 
         const inpRef = this.internalState.registerField(fieldName, input);
@@ -201,7 +150,7 @@ export class Form {
         const isAutoInjectDisabled = this.autoInject === false;
         const isFieldRegistred = this.internalState.isFieldRegistred(fieldName);
 
-        if (isAutoInjectDisabled && isFieldRegistred) return;
+        if (isAutoInjectDisabled && isFieldRegistred) return null;
 
         // NOTE: Inject default value into field
         // if field has been registered before form's current value will be used
@@ -213,11 +162,30 @@ export class Form {
         // Important to do this AFTER injecting default values (`values` will take those into consideration)
         this.internalState.initValueFor(fieldName, inpRef);
 
-        inpRef.addEventListener("change", listener);
-
         return inpRef;
       },
+      onChange: (ev: ChangeEvent<V>) => {
+        const target = ev.currentTarget;
+
+        // get value form field
+        const value = this.internalState.getValueFromInput(target);
+        // and update form values
+        this.setValueFor(fieldName, value);
+
+        const _onChange = opts?.onChange;
+
+        if (_onChange) _onChange(ev);
+
+        return true;
+      },
     };
+  }
+
+  getInputRef(fieldName: Register) {
+    if (!this.internalState.isFieldRegistred(fieldName)) return;
+    const fn = this.internalState.simplifyFieldName(fieldName);
+
+    return this.internalState.registor[fn];
   }
 
   clearField(fieldName: Register) {
