@@ -233,16 +233,19 @@ describe("Form Test: useWatchValue", () => {
     const WatchComp = () => {
       const value = useWatchValue("text-input");
       const selectValue = useWatchValue("select-input");
-
-      if (value instanceof FileList) throw Error();
-      if (selectValue instanceof FileList) throw Error();
+      const multiSelectValue = useWatchValue("multi-select-input", {
+        compareFn: deepEqual,
+      });
 
       return (
         <>
-          {/* @ts-expect-error fix this eventually*/}
+          {/* @ts-expect-error */}
           <span data-testid="span">{value}</span>
-          {/* @ts-expect-error fix this eventually*/}
+          {/* @ts-expect-error */}
           <span data-testid="select-span">{selectValue}</span>
+          <span data-testid="multi-select-span">
+            {String(multiSelectValue)}
+          </span>
         </>
       );
     };
@@ -259,20 +262,31 @@ describe("Form Test: useWatchValue", () => {
             {...form.register("text-input")}
           />
           <select data-testid="select" {...form.register("select-input")}>
-            <option data-testid="option1">option1</option>
-            <option data-testid="option2">option2</option>
-            <option data-testid="option3">option3</option>
+            <option>option1</option>
+            <option>option2</option>
+            <option>option3</option>
           </select>
+          <select
+            data-testid="multi-select"
+            multiple
+            {...form.register("multi-select-input")}
+          >
+            <option>option1</option>
+            <option>option2</option>
+            <option>option3</option>
+          </select>
+
           <button
             data-testid="button"
             onClick={() => {
               form.setValueFor("text-input", "change with set value");
               form.setValueFor("select-input", "option3");
+              form.setValueFor("multi-select-input", ["option2"]);
             }}
           >
             click
           </button>
-          <WatchComp></WatchComp>
+          <WatchComp />
         </FormProvider>
       );
     };
@@ -281,13 +295,16 @@ describe("Form Test: useWatchValue", () => {
     const button = screen.getByTestId("button");
     const span = screen.getByTestId("span");
     const selectSpan = screen.getByTestId("select-span");
+    const multiSelectSpan = screen.getByTestId("multi-select-span");
 
     expect(span).toHaveTextContent("test");
     expect(selectSpan).toHaveTextContent("option1");
+    expect(multiSelectSpan).toHaveTextContent("");
 
     fireEvent.click(button);
 
     expect(span).toHaveTextContent("change with set value");
     expect(selectSpan).toHaveTextContent("option3");
+    expect(multiSelectSpan).toHaveTextContent("option2");
   });
 });

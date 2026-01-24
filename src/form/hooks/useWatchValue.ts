@@ -4,7 +4,7 @@ import { Register } from "../types";
 import { useFormContext } from "./formContext";
 
 type Opts = {
-  form: Form;
+  form?: Form;
   // NOTE: if value is NOT a primitive type, a compare function can be provided
   // to compare 'old value' to 'new value' before calling 'setState'
   // This way, we safe a few re-renders (and even infinite loops)
