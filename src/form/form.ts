@@ -78,11 +78,16 @@ export class Form {
     if (defaultValue !== undefined) {
       switch (inpRef.type) {
         case "file": {
+          if (!(inpRef instanceof HTMLInputElement))
+            throw Error(
+              `[Error-injectDefaultValues]: inputRef is not an instance of HTMLInputElement`,
+            );
+
           if (
             !(defaultValue instanceof FileList || defaultValue instanceof File)
           ) {
             console.error(
-              `[Error-register]: default value for file inputs must be an instance of File | FileList`,
+              `[Error-injectDefaultValues]: default value for file inputs must be an instance of File | FileList`,
               typeof defaultValue,
               defaultValue,
             );
@@ -97,6 +102,11 @@ export class Form {
         }
         case "radio":
         case "checkbox":
+          if (!(inpRef instanceof HTMLInputElement))
+            throw Error(
+              `[Error-injectDefaultValues]: inputRef is not an instance of HTMLInputElement`,
+            );
+
           inpRef.defaultChecked = !!defaultValue;
           break;
         case "select-one": {

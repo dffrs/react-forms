@@ -1,4 +1,4 @@
-import { fireEvent, getByTestId, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { vi } from "vitest";
 import { useForm, useWatchValue } from "../form";
 
@@ -95,8 +95,7 @@ describe("On input change", () => {
     function Test() {
       const form = useForm("test");
 
-      /* @ts-expect-error variable not being used */
-      const _ = useWatchValue("i-checkbox", { form });
+      useWatchValue("i-checkbox", { form });
 
       return (
         <>
