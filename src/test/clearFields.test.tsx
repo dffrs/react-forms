@@ -14,6 +14,7 @@ describe("Form tests: clearFields", () => {
             opt1: true,
           },
           "dummy-select": "option-1",
+          "dummy-multi-select": ["option-1", "option-2"],
         },
       });
 
@@ -25,6 +26,7 @@ describe("Form tests: clearFields", () => {
           ["dummy-radio.opt1"]: true,
           ["dummy-radio.opt2"]: false,
           ["dummy-select"]: "option-1",
+          ["dummy-multi-select"]: ["option-1", "option-2"],
         });
       }, [form]);
 
@@ -77,6 +79,21 @@ describe("Form tests: clearFields", () => {
               option 3
             </option>
           </select>
+          <select
+            data-testid="multi-select"
+            multiple
+            {...form.register("dummy-multi-select")}
+          >
+            <option data-testid="multi-select-option-1" value="option-1">
+              option 1
+            </option>
+            <option data-testid="multi-select-option-2" value="option-2">
+              option 2
+            </option>
+            <option data-testid="multi-select-option-3" value="option-3">
+              option 3
+            </option>
+          </select>
         </>
       );
     };
@@ -101,6 +118,12 @@ describe("Form tests: clearFields", () => {
     const select = getByTestId<HTMLSelectElement>(container, "select");
     if (!select) throw Error("input not found");
 
+    const multiSelect = getByTestId<HTMLSelectElement>(
+      container,
+      "multi-select",
+    );
+    if (!multiSelect) throw Error("input not found");
+
     const option1 = getByTestId<HTMLOptionElement>(
       container,
       "select-option-1",
@@ -119,6 +142,24 @@ describe("Form tests: clearFields", () => {
     );
     if (!option3) throw Error("option not found");
 
+    const multiOption1 = getByTestId<HTMLOptionElement>(
+      container,
+      "multi-select-option-1",
+    );
+    if (!multiOption1) throw Error("option not found");
+
+    const multiOption2 = getByTestId<HTMLOptionElement>(
+      container,
+      "multi-select-option-2",
+    );
+    if (!multiOption2) throw Error("option not found");
+
+    const multiOption3 = getByTestId<HTMLOptionElement>(
+      container,
+      "multi-select-option-3",
+    );
+    if (!multiOption3) throw Error("option not found");
+
     const button = getByTestId(container, "button");
     if (!button) throw Error("button not found");
 
@@ -132,6 +173,9 @@ describe("Form tests: clearFields", () => {
     expect(option1.selected).toBeTruthy();
     expect(option2.selected).toBeFalsy();
     expect(option3.selected).toBeFalsy();
+    expect(multiOption1.selected).toBeTruthy();
+    expect(multiOption2.selected).toBeTruthy();
+    expect(multiOption3.selected).toBeFalsy();
 
     // click on button to clear all fields
     fireEvent.click(button);
@@ -146,6 +190,9 @@ describe("Form tests: clearFields", () => {
     expect(option1.selected).toBeFalsy();
     expect(option2.selected).toBeFalsy();
     expect(option3.selected).toBeFalsy();
+    expect(multiOption1.selected).toBeFalsy();
+    expect(multiOption2.selected).toBeFalsy();
+    expect(multiOption3.selected).toBeFalsy();
   });
 
   it("clearField (with fieldName) clears field", () => {
