@@ -1,6 +1,6 @@
 import { Spy } from "@dffrs/spy";
 import { Internal } from "./internal";
-import { FormRefs, Register } from "./types";
+import { CustomSelect, FormRefs, Register } from "./types";
 import { ChangeEvent } from "react";
 
 const SpyInternal = Spy(Internal);
@@ -106,11 +106,25 @@ export class Form {
           inpRef.value = selectDefaulValue;
           break;
         }
-        // FIX: ONE DAY MAYBE
         case "select-multiple": {
-          throw Error(
-            "[Error-injectDefaultValues]: select-multiple are not supported",
-          );
+          const ir = inpRef as CustomSelect;
+
+          const selectDefaulValue = Array.isArray(defaultValue)
+            ? defaultValue
+            : String(defaultValue);
+
+          // NOTE: multi-select 'value' is weird...
+          // it always displays 1 option only, even if multiple are selected
+          // soooo, no there's not point in doing 'ir.value = selectDefaulValue'
+          //
+          // selects are weird ...
+          ir.defaultValue = selectDefaulValue;
+
+          Array.from(ir.options).forEach((option) => {
+            option.selected = selectDefaulValue?.includes(option.value);
+          });
+
+          break;
         }
         default:
           inpRef.defaultValue = defaultValue as string; // TODO: Fix type
