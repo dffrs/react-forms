@@ -1,5 +1,5 @@
 import { Spy } from "@dffrs/spy";
-import { CustomSelect, GroupReg, Register, SimpleReg } from "./types";
+import { FormRefs, GroupReg, Register, SimpleReg } from "./types";
 
 class Value<V> {
   value: V | undefined;
@@ -15,7 +15,7 @@ class Value<V> {
 const SValue = Spy(Value);
 
 export class Internal {
-  registor: Record<string, HTMLInputElement | CustomSelect>;
+  registor: Record<string, FormRefs>;
   defaultValues: Record<string, unknown>;
   values: Record<string, InstanceType<typeof SValue>>;
 
@@ -80,10 +80,7 @@ export class Internal {
   //     Registering and unregistering fields      //
   //                                               //
   ///////////////////////////////////////////////////
-  registerField<V extends HTMLInputElement | CustomSelect>(
-    _fieldName: Register,
-    ref: V,
-  ) {
+  registerField<V extends FormRefs>(_fieldName: Register, ref: V) {
     const fieldName = this.simplifyFieldName(_fieldName);
 
     // if (this.isFieldRegistred(fieldName)) return this.registor[fieldName];
@@ -138,10 +135,7 @@ export class Internal {
 
   // NOTE: Creates  a new entry, on form's values, for a field.
   // This is usefull for fields that were NOT specified on default values
-  initValueFor<V extends HTMLInputElement | CustomSelect>(
-    _fieldName: Register,
-    input: V,
-  ) {
+  initValueFor<V extends FormRefs>(_fieldName: Register, input: V) {
     const fieldName = this.simplifyFieldName(_fieldName);
 
     let v;
@@ -153,7 +147,7 @@ export class Internal {
     this.values[fieldName] = v;
   }
 
-  getValueFromInput<V extends HTMLInputElement | CustomSelect>(input: V) {
+  getValueFromInput<V extends FormRefs>(input: V) {
     const ref = input;
 
     switch (ref.type) {

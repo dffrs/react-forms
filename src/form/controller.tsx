@@ -2,19 +2,15 @@ import { ChangeEvent, useMemo } from "react";
 import { Form } from "./form";
 import { useFormContext } from "./hooks/formContext";
 import { useWatchValue } from "./hooks/useWatchValue";
-import { CustomSelect, Register } from "./types";
+import { FormRefs, Register } from "./types";
 
 type Props = {
   fieldName: Register;
   form?: Form;
   // TODO: Provide 'onChange'
   children: (args: {
-    ref: (
-      input: HTMLInputElement | CustomSelect | HTMLTextAreaElement | null,
-    ) => HTMLInputElement | CustomSelect | HTMLTextAreaElement | null;
-    onChange: <V extends HTMLInputElement | CustomSelect | HTMLTextAreaElement>(
-      ev: ChangeEvent<V>,
-    ) => boolean;
+    ref: (input: FormRefs | null) => FormRefs | null;
+    onChange: <V extends FormRefs>(ev: ChangeEvent<V>) => boolean;
     value: unknown;
   }) => React.ReactNode;
 };
@@ -29,7 +25,7 @@ export const Controller = ({ fieldName, form, children }: Props) => {
 
   return children({
     ref: registerValues["ref"],
-    value: useWatchValue(fieldName, { form: _form }),
     onChange: registerValues["onChange"],
+    value: useWatchValue(fieldName, { form: _form }),
   });
 };

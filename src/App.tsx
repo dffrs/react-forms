@@ -130,7 +130,7 @@ function App() {
               {({ ref, value, onChange }) => (
                 <>
                   <input type="text" ref={ref} onChange={onChange} />
-                  <span>{value}</span>
+                  <span>{value as string}</span>
                 </>
               )}
             </Controller>

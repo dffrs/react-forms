@@ -1,6 +1,6 @@
 import { Spy } from "@dffrs/spy";
 import { Internal } from "./internal";
-import { CustomSelect, Register } from "./types";
+import { FormRefs, Register } from "./types";
 import { ChangeEvent } from "react";
 
 const SpyInternal = Spy(Internal);
@@ -66,7 +66,7 @@ export class Form {
     return resultObj;
   }
 
-  private injectDefaultValues<V extends HTMLInputElement | CustomSelect>(
+  private injectDefaultValues<V extends FormRefs>(
     fieldName: Register,
     inpRef: V,
   ) {
@@ -128,7 +128,7 @@ export class Form {
     return this.name;
   }
 
-  register<V extends HTMLInputElement | CustomSelect | HTMLTextAreaElement>(
+  register<V extends FormRefs>(
     fieldName: Register,
     opts?: { onChange?: (ev: ChangeEvent<V>) => void },
   ) {
