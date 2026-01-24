@@ -1,6 +1,7 @@
 import { Spy } from "@dffrs/spy";
 import { Internal } from "./internal";
 import { CustomSelect, Register } from "./types";
+import { ChangeEvent } from "react";
 
 const SpyInternal = Spy(Internal);
 
@@ -123,59 +124,13 @@ export class Form {
     }
   }
 
-  private removeListener(fieldName: Register, listener: (ev: Event) => void) {
-    if (!this.internalState.isFieldRegistred(fieldName)) return;
-    const fn = this.internalState.simplifyFieldName(fieldName);
-
-    const inputRef = this.internalState.registor[fn];
-
-    inputRef.removeEventListener("change", listener);
-  }
-
-  private listenToInputChanges(fieldName: Register) {
-    return (ev: Event) => {
-      const target = ev.target;
-
-      if (
-        !(
-          target instanceof HTMLInputElement ||
-          target instanceof HTMLSelectElement ||
-          target instanceof HTMLTextAreaElement
-        )
-      ) {
-        console.error(
-          "[Error-listenToInputChanges]: Only input & select elements can be registered",
-        );
-        return;
-      }
-
-      // get value from the input and update forms
-      const value = this.internalState.getValueFromInput(target);
-      this.setValueFor(fieldName, value);
-
-      const nativeSetter = Object.getOwnPropertyDescriptor(
-        Object.getPrototypeOf(target),
-        "value",
-      )?.set;
-
-      // NOTE: do i need this ??
-      if (nativeSetter) {
-        nativeSetter.call(target, value);
-
-        // NOTE: Do I need this ? There's a test that will
-        // fail if this section gets uncommented
-        // const ev = new Event("input", { bubbles: true });
-        // target.dispatchEvent(ev);
-      }
-    };
-  }
-
   getName() {
     return this.name;
   }
 
   register<V extends HTMLInputElement | CustomSelect | HTMLTextAreaElement>(
     fieldName: Register,
+    opts?: { onChange?: (ev: ChangeEvent<V>) => void },
   ) {
     const props =
       typeof fieldName === "string"
@@ -185,10 +140,6 @@ export class Form {
             value: fieldName.element,
           };
 
-    // NOTE: keep this here, so that 'listener' has the same reference
-    // when removing event listener from 'inpRef'
-    const listener = this.listenToInputChanges(fieldName);
-
     return {
       ...props,
       ref: (input: V | null) => {
@@ -196,7 +147,6 @@ export class Form {
         // This means that we have an oportunity to clean up 'listener'
         // (it still has the same reference at this point)
         if (!input) {
-          this.removeListener(fieldName, listener);
           return null;
         }
 
@@ -217,9 +167,19 @@ export class Form {
         // Important to do this AFTER injecting default values (`values` will take those into consideration)
         this.internalState.initValueFor(fieldName, inpRef);
 
-        inpRef.addEventListener("change", listener);
-
         return inpRef;
+      },
+      onChange: (ev: ChangeEvent<V>) => {
+        const target = ev.currentTarget;
+
+        const value = this.internalState.getValueFromInput(target);
+        this.setValueFor(fieldName, value);
+
+        const _onChange = opts?.onChange;
+
+        if (_onChange) _onChange(ev);
+
+        return true;
       },
     };
   }

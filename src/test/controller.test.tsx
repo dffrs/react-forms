@@ -15,12 +15,19 @@ describe("Controller tests", () => {
         expect(form.getValues()).to.deep.equal({
           "i-text": "",
         });
-      }, []);
+      }, [form]);
 
       return (
         <>
           <Controller fieldName={fieldName} form={form}>
-            {({ ref }) => <input data-testid="input" type="text" ref={ref} />}
+            {({ ref, onChange }) => (
+              <input
+                data-testid="input"
+                type="text"
+                ref={ref}
+                onChange={onChange}
+              />
+            )}
           </Controller>
           <button
             data-testid="button"
@@ -57,14 +64,19 @@ describe("Controller tests", () => {
         expect(form.getValues()).to.deep.equal({
           "i-text": "",
         });
-      }, []);
+      }, [form]);
 
       return (
         <FormProvider form={form}>
           <Controller fieldName={fieldName}>
-            {({ ref, value }) => (
+            {({ ref, value, onChange }) => (
               <>
-                <input data-testid="input" type="text" ref={ref} />
+                <input
+                  data-testid="input"
+                  type="text"
+                  ref={ref}
+                  onChange={onChange}
+                />
                 {/* @ts-expect-error ignore*/}
                 <span data-testid="span">{value}</span>
               </>

@@ -16,7 +16,7 @@ function App() {
     },
   });
 
-  const value = useWatchValue("i-text", { form });
+  const value = useWatchValue("i-textarea", { form });
 
   useEffect(() => {
     console.log("value", value);
@@ -74,9 +74,10 @@ function App() {
             <input
               type="text"
               id="textId"
-              {...form.register("i-text")}
+              {...form.register("i-text", {
+                onChange: () => console.log("change"),
+              })}
               onInput={() => console.log("input")}
-              onChange={() => console.log("change")}
             />
           </div>
           <div>
@@ -84,9 +85,9 @@ function App() {
             <input
               type="checkbox"
               id="checkboxId"
-              {...form.register("i-checkbox")}
-              onInput={() => console.log("input")}
-              onChange={() => console.log("change")}
+              {...form.register("i-checkbox", {
+                onChange: () => console.log("change"),
+              })}
             />
             <label htmlFor="checkboxId">Test</label>
           </div>
@@ -97,8 +98,10 @@ function App() {
               id="contactChoice1"
               value="email"
               onInput={() => console.log("input")}
-              onChange={() => console.log("change")}
-              {...form.register({ groupName: "i-radio", element: "email" })}
+              {...form.register(
+                { groupName: "i-radio", element: "email" },
+                { onChange: () => console.log("change") },
+              )}
             />
             <label htmlFor="contactChoice1">Email</label>
             <input
@@ -124,9 +127,9 @@ function App() {
           <div>
             <h3>Textarea</h3>
             <Controller fieldName="i-textarea" form={form}>
-              {({ ref, value }) => (
+              {({ ref, value, onChange }) => (
                 <>
-                  <input type="text" ref={ref} />
+                  <input type="text" ref={ref} onChange={onChange} />
                   <span>{value}</span>
                 </>
               )}

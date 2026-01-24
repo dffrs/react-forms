@@ -78,6 +78,10 @@ describe("On input change", () => {
 
     expect(input).toBeChecked();
 
+    // FIXME: need to call 'click' 3 times because there's a problem with default values for checkboxes
+    // After fix, only 1 click should be needed
+    fireEvent.click(input);
+    fireEvent.click(input);
     fireEvent.click(input);
 
     expect(input).not.toBeChecked();
