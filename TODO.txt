@@ -1,6 +1,4 @@
 - Code cleanup
 - Fix TODOS
 - Form validation (errors)
-- Support select fields
-- Create a Controller wrap component, for custom inputs (half way there)
-- Form internalState might need to keep a reference for every 'listener' created in 'register'
+- Support select-multiple fields 
