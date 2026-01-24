@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Controller, deepEqual, useForm, useWatchValue } from "./form";
-const temp = ["option-3", "option-2"];
 
 function App() {
   const [open, setOpen] = useState(() => true);
@@ -13,7 +12,7 @@ function App() {
       "i-radio": {
         phone: true,
       },
-      "i-select": temp,
+      "i-select": ["option-3", "option-2"],
     },
   });
 
