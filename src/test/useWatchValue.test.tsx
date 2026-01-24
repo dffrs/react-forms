@@ -158,9 +158,10 @@ describe("Form Test: useWatchValue", () => {
 
       const value = useWatchValue("text-input", { form });
       const selectValue = useWatchValue("select-input", { form });
-
-      if (value instanceof FileList) throw Error();
-      if (selectValue instanceof FileList) throw Error();
+      const multiSelectValue = useWatchValue("multi-select-input", {
+        form,
+        compareFn: deepEqual,
+      });
 
       return (
         <>
@@ -175,19 +176,34 @@ describe("Form Test: useWatchValue", () => {
             defaultValue="option3"
             {...form.register("select-input")}
           >
-            <option data-testid="option1">option1</option>
-            <option data-testid="option2">option2</option>
-            <option data-testid="option3">option3</option>
+            <option>option1</option>
+            <option>option2</option>
+            <option>option3</option>
           </select>
-          {/* @ts-expect-error  value is unknow (for now, might improve in the future)*/}
+          <select
+            data-testid="multi-select"
+            multiple
+            defaultValue={["option1", "option2"]}
+            {...form.register("multi-select-input")}
+          >
+            <option>option1</option>
+            <option>option2</option>
+            <option>option3</option>
+          </select>
+          {/* @ts-expect-error */}
           <span data-testid="span">{value}</span>
-          {/* @ts-expect-error  value is unknow (for now, might improve in the future)*/}
+          {/* @ts-expect-error */}
           <span data-testid="select-span">{selectValue}</span>
+          <span data-testid="multi-select-span">
+            {String(multiSelectValue)}
+          </span>
+
           <button
             data-testid="button"
             onClick={() => {
               form.setValueFor("text-input", "change with set value");
               form.setValueFor("select-input", "option2");
+              form.setValueFor("multi-select-input", ["option3"]);
             }}
           >
             click
@@ -200,14 +216,17 @@ describe("Form Test: useWatchValue", () => {
     const button = screen.getByTestId("button");
     const span = screen.getByTestId("span");
     const selectSpan = screen.getByTestId("select-span");
+    const multiSelectSpan = screen.getByTestId("multi-select-span");
 
     expect(span).toHaveTextContent("test");
     expect(selectSpan).toHaveTextContent("option3");
+    expect(multiSelectSpan).toHaveTextContent("option1,option2");
 
     fireEvent.click(button);
 
     expect(span).toHaveTextContent("change with set value");
     expect(selectSpan).toHaveTextContent("option2");
+    expect(multiSelectSpan).toHaveTextContent("option3");
   });
 
   it("works with FormProvider", () => {
