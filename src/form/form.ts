@@ -172,7 +172,9 @@ export class Form {
       onChange: (ev: ChangeEvent<V>) => {
         const target = ev.currentTarget;
 
+        // get value form field
         const value = this.internalState.getValueFromInput(target);
+        // and update form values
         this.setValueFor(fieldName, value);
 
         const _onChange = opts?.onChange;
