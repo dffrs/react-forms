@@ -7,7 +7,6 @@ import { FormRefs, Register } from "./types";
 type Props = {
   fieldName: Register;
   form?: Form;
-  // TODO: Provide 'onChange'
   children: (args: {
     ref: (input: FormRefs | null) => FormRefs | null;
     onChange: <V extends FormRefs>(ev: ChangeEvent<V>) => boolean;
