@@ -5,20 +5,6 @@ import { ChangeEvent } from "react";
 
 const SpyInternal = Spy(Internal);
 
-// function AfterMethod(_: any, __: string, descriptor: PropertyDescriptor) {
-//   const originalMethod = descriptor.value;
-//
-//   descriptor.value = function (...args: any[]) {
-//     // Call the original method
-//     const result = originalMethod.apply(this, args);
-//
-//     // Return the original result if you want to keep it unchanged
-//     return result;
-//   };
-//
-//   return descriptor;
-// }
-
 export type Options = {
   defaultValues?: Record<string, unknown>;
   autoInject?: boolean;
@@ -114,8 +100,7 @@ export class Form {
             ? defaultValue[0]
             : String(defaultValue);
 
-          // NOTE:
-          // if we ONLY inject 'defaultValue', 'value' would NOT be in-sync (would have the first select's option as 'value')
+          // NOTE: if we ONLY inject 'defaultValue', 'value' would NOT be in-sync (would have the first select's option as 'value')
           // Solution ? Assign 'selectDefaulValue' to it
           inpRef.defaultValue = selectDefaulValue;
           inpRef.value = selectDefaulValue;
