@@ -175,6 +175,46 @@ describe("Form tests: Values", () => {
     render(<InputComp />);
   });
 
+  it("registers select-multiple input", () => {
+    const InputComp = () => {
+      const form = useForm("test");
+
+      useEffect(() => {
+        expect(form.getValues()).toEqual({ ["dummy-select"]: [] });
+      }, [form]);
+
+      return (
+        <select multiple {...form.register("dummy-select")}>
+          <option>option1</option>
+          <option>option2</option>
+          <option>option3</option>
+        </select>
+      );
+    };
+
+    render(<InputComp />);
+  });
+
+  it("respects select-multiple value", () => {
+    const InputComp = () => {
+      const form = useForm("test");
+
+      useEffect(() => {
+        expect(form.getValues()).toEqual({ ["dummy-select"]: ["option3"] });
+      }, [form]);
+
+      return (
+        <select multiple {...form.register("dummy-select")} value={["option3"]}>
+          <option>option1</option>
+          <option>option2</option>
+          <option>option3</option>
+        </select>
+      );
+    };
+
+    render(<InputComp />);
+  });
+
   it("respects inputs value", () => {
     const InputComp = () => {
       const form = useForm("test");

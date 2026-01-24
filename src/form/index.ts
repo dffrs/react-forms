@@ -4,3 +4,4 @@ export { useWatchValue } from "./hooks/useWatchValue";
 export { FormProvider, useFormContext } from "./hooks/formContext";
 export { type Register } from "./types";
 export { Controller } from "./controller";
+export { deepEqual } from "./deepEqual.ts";

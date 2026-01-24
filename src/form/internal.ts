@@ -1,5 +1,5 @@
 import { Spy } from "@dffrs/spy";
-import { FormRefs, GroupReg, Register, SimpleReg } from "./types";
+import { CustomSelect, FormRefs, GroupReg, Register, SimpleReg } from "./types";
 
 class Value<V> {
   value: V | undefined;
@@ -170,6 +170,22 @@ export class Internal {
       case "number":
         if (ref.value === "") return undefined;
         return +ref.value; // NOTE: might return NaN
+      case "select-multiple": {
+        const ir = ref as CustomSelect;
+
+        const options = Array.from(ir.options).reduce<string[]>(
+          (prev, curr) => {
+            if (!curr.selected) return prev;
+
+            prev.push(curr.value);
+
+            return prev;
+          },
+          [],
+        );
+
+        return options;
+      }
 
       default:
         return ref.value;
@@ -269,6 +285,20 @@ export class Internal {
         }
         inpRef.checked = value;
         break;
+
+      case "select-multiple": {
+        const ir = inpRef as CustomSelect;
+        const selectValue = Array.isArray(value) ? value : String(value);
+
+        Array.from(ir.options).forEach((option) => {
+          if (selectValue?.includes(option.value)) {
+            option.selected = true;
+          } else {
+            option.selected = false;
+          }
+        });
+        break;
+      }
 
       default:
         inpRef.value = `${value}`;

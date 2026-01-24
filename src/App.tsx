@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Controller, useForm, useWatchValue } from "./form";
+import { Controller, deepEqual, useForm, useWatchValue } from "./form";
 
 function App() {
   const [open, setOpen] = useState(() => true);
@@ -12,11 +12,11 @@ function App() {
       "i-radio": {
         phone: true,
       },
-      "i-select": "option-1",
+      "i-select": ["option-3", "option-2"],
     },
   });
 
-  const value = useWatchValue("i-textarea", { form });
+  const value = useWatchValue("i-select", { form, compareFn: deepEqual });
 
   useEffect(() => {
     console.log("value", value);
@@ -63,7 +63,7 @@ function App() {
         >
           <div>
             <h3>Select</h3>
-            <select {...form.register("i-select")}>
+            <select multiple {...form.register("i-select")}>
               <option value="option-1">option 1</option>
               <option value="option-2">option 2</option>
               <option value="option-3">option 3</option>
