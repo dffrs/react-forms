@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useForm } from "../form";
+import { useForm, useFormContext } from "../form";
 import { fireEvent, getByTestId, render } from "@testing-library/react";
 import { InputType } from "./util";
 
@@ -52,6 +52,16 @@ describe("Form Tests: useForm", () => {
     };
 
     render(<DummyComp />);
+  });
+
+  it("useFormContext throws error if form is not accessible", () => {
+    const Comp = () => {
+      useFormContext();
+
+      return null;
+    };
+
+    expect(() => render(<Comp />)).toThrow();
   });
 
   Object.entries({
