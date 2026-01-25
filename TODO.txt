@@ -1,3 +1,19 @@
 - Code cleanup
 - Fix TODOS
 - Form validation (errors)
+- Implement wildcards searches:
+    const obj: Record<string, string> = {
+      firstProp: "firstProp",
+      secondProp: "secondProp",
+      "nested.prop": "nestedProp",
+      "one.level.deeper": "oneLevelDeeper",
+      "two.levels.even.deeper": "twoLevelsEvenDeeper"
+    };
+
+    function getByPattern(obj: Record<string, string>, pattern: string) {
+      const regex = new RegExp(
+        '^' + pattern.replace(/\./g, '\\.').replace(/\*/g, '[^.]+') + '$'
+      );
+    
+      return Object.entries(obj).find(([key]) => regex.test(key))?.[1];
+    }
