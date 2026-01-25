@@ -4,6 +4,8 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
+const overallCoverage = 60;
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
@@ -12,5 +14,16 @@ export default defineConfig({
     environment: "jsdom",
     css: true,
     setupFiles: "./src/test/setup.ts",
+    coverage: {
+      provider: "istanbul",
+      include: ["src/form/*"],
+      clean: true,
+      thresholds: {
+        statements: overallCoverage,
+        functions: overallCoverage,
+        branches: overallCoverage,
+        lines: overallCoverage,
+      },
+    },
   },
 });

@@ -6,6 +6,7 @@ import {
   queryByTestId,
   render,
 } from "@testing-library/react";
+import { vi } from "vitest";
 
 type InputType = React.HTMLInputTypeAttribute;
 type Temp = { descr: string; type: InputType; expected: unknown };
@@ -286,5 +287,28 @@ describe("Form tests: Values", () => {
     expect(queryByTestId(container, "input")).toBeNull();
 
     expect(input).toHaveValue("new value");
+  });
+
+  it("form register supports custom onChange", () => {
+    const onChange = vi.fn();
+
+    const InputComp = () => {
+      const form = useForm("test");
+
+      return (
+        <input
+          type="text"
+          data-testid="input"
+          {...form.register("dummy-input", { onChange })}
+        />
+      );
+    };
+
+    const { getByTestId } = render(<InputComp />);
+    const input = getByTestId("input");
+
+    fireEvent.change(input, { target: { value: "test" } });
+
+    expect(onChange).toHaveBeenCalledTimes(1);
   });
 });

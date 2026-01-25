@@ -58,9 +58,14 @@ describe("getFieldNamesByPattern tests", () => {
                 partialKeyRegex("*.*.input-*"),
               );
 
+              const keys_v5 = form.getFieldNamesByPattern(
+                partialKeyRegex("*.*.non-existing-pattern"),
+              );
+
               expect(keys_v1).toEqual(keys_v2);
               expect(keys_v1).toEqual(keys_v3);
               expect(keys_v1).toEqual(keys_v4);
+              expect(keys_v1).not.toEqual(keys_v5);
 
               expect(keys_v1.length).toEqual(numberOfInputs);
 
