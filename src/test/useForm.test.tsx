@@ -64,6 +64,23 @@ describe("Form Tests: useForm", () => {
     expect(() => render(<Comp />)).toThrow();
   });
 
+  it("form.getInputRef returns the same ref", () => {
+    const Comp = () => {
+      const form = useForm("test");
+
+      const { ref, ...rest } = form.register("input");
+
+      useEffect(() => {
+        expect(ref).toEqual(form.getInputRef("input"));
+        expect(undefined).toEqual(form.getInputRef("non-registered-field"));
+      }, [ref, form]);
+
+      return <input type="text" ref={ref} {...rest} />;
+    };
+
+    expect(() => render(<Comp />)).toThrow();
+  });
+
   it("form.getName() returns correct name", () => {
     const form = new Form("test");
 
