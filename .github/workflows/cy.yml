@@ -31,3 +31,9 @@ jobs:
 
       - name: Run coverage
         run: pnpm coverage
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vitest-coverage
+          path: coverage
