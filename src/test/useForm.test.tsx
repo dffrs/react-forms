@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useForm, useFormContext } from "../form";
+import { Form, useForm, useFormContext } from "../form";
 import { fireEvent, getByTestId, render } from "@testing-library/react";
 import { InputType } from "./util";
 
@@ -62,6 +62,12 @@ describe("Form Tests: useForm", () => {
     };
 
     expect(() => render(<Comp />)).toThrow();
+  });
+
+  it("form.getName() returns correct name", () => {
+    const form = new Form("test");
+
+    expect(form.getName()).toEqual("test");
   });
 
   Object.entries({
