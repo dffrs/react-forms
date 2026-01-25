@@ -51,9 +51,16 @@ export class Internal {
       : this.encodeFieldName(fieldName);
   }
 
-  isGroupRegAsString(fieldName: Register) {
-    // TODO:use Internal.DELIMITER instead of '\.'
-    return typeof fieldName === "string" && /[\w]+\.[\w]+/.test(fieldName);
+  isGroupRegAsString(fieldName: Register): boolean {
+    if (typeof fieldName !== "string") return false;
+
+    const escapedDelimiter = Internal.DELIMITER.replace(
+      /[.*+?^${}()|[\]\\]/g,
+      "\\$&",
+    );
+    const regex = new RegExp(`\\w+${escapedDelimiter}\\w+`);
+
+    return regex.test(fieldName);
   }
 
   getGroupName(fieldName: Register): GroupReg | null {
