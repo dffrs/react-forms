@@ -34,3 +34,9 @@ export const deepEqual = (a: any, b: any, visited = new WeakMap()): boolean => {
 
   return true;
 };
+
+export const partialKeyRegex = (pattern: string) => {
+  return new RegExp(
+    "^" + pattern.replace(/\./g, "\\.").replace(/\*/g, "[^.]+") + "$",
+  );
+};

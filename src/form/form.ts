@@ -195,6 +195,20 @@ export class Form {
     };
   }
 
+  getFieldNamesByPattern(pattern: RegExp) {
+    const keys = Object.keys(this.internalState.registor).reduce<string[]>(
+      (prev, key) => {
+        if (!pattern.test(key)) return prev;
+
+        prev.push(key);
+        return prev;
+      },
+      [],
+    );
+
+    return keys;
+  }
+
   getInputRef(fieldName: Register) {
     if (!this.internalState.isFieldRegistred(fieldName)) return;
     const fn = this.internalState.simplifyFieldName(fieldName);

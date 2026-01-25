@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { Controller, deepEqual, useForm, useWatchValue } from "./form";
+import {
+  Controller,
+  deepEqual,
+  partialKeyRegex,
+  useForm,
+  useWatchValue,
+} from "./form";
 
 function App() {
   const [open, setOpen] = useState(() => true);
@@ -50,6 +56,17 @@ function App() {
       </button>
       <button type="button" onClick={() => form.clearFields()}>
         clear fields
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          const pattern = partialKeyRegex("i-radio.*");
+          const keys = form.getFieldNamesByPattern(pattern);
+
+          console.log("keys", keys);
+        }}
+      >
+        get keys by pattern
       </button>
       {open && (
         <div
