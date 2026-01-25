@@ -195,7 +195,7 @@ export class Form {
     };
   }
 
-  getKeysByPattern(pattern: RegExp) {
+  getFieldNamesByPattern(pattern: RegExp) {
     const keys = Object.keys(this.internalState.registor).reduce<string[]>(
       (prev, key) => {
         if (!pattern.test(key)) return prev;
