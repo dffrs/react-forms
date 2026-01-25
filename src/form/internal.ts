@@ -118,6 +118,9 @@ export class Internal {
     if (!this.isFieldRegistred(fieldName)) return false;
 
     delete this.registor[fieldName];
+    delete this.values[fieldName];
+    delete this.defaultValues[fieldName];
+
     return true;
   }
 

@@ -195,6 +195,12 @@ export class Form {
     };
   }
 
+  unregisterField(fieldName: Register) {
+    const fn = this.internalState.simplifyFieldName(fieldName);
+
+    return this.internalState.unregisterField(fn);
+  }
+
   getFieldNamesByPattern(pattern: RegExp) {
     const keys = Object.keys(this.internalState.registor).reduce<string[]>(
       (prev, key) => {
@@ -263,6 +269,14 @@ export class Form {
 
   getValues() {
     return this.internalState.getValues();
+  }
+
+  getDefaultValues() {
+    return this.internalState.getDefaultValues();
+  }
+
+  getDefaultValuesFor(fieldName: Register) {
+    return this.internalState.getDefaultValueFor(fieldName);
   }
 
   // TODO: What if I want to set a value for a groupReg
