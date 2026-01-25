@@ -51,6 +51,24 @@ export class Internal {
       : this.encodeFieldName(fieldName);
   }
 
+  isGroupRegAsString(fieldName: Register) {
+    // TODO:use Internal.DELIMITER instead of '\.'
+    return typeof fieldName === "string" && /[\w]+\.[\w]+/.test(fieldName);
+  }
+
+  getGroupName(fieldName: Register): GroupReg | null {
+    switch (true) {
+      case typeof fieldName !== "string":
+        return { groupName: fieldName.groupName, element: fieldName.element };
+
+      case this.isGroupRegAsString(fieldName):
+        return this.decodeFieldName(fieldName);
+
+      default:
+        return null;
+    }
+  }
+
   isFieldRegistred(fieldName: Register) {
     return this.simplifyFieldName(fieldName) in this.registor;
   }

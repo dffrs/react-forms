@@ -251,22 +251,31 @@ export class Form {
     return this.internalState.getValues();
   }
 
+  // TODO: What if I want to set a value for a groupReg
+  // that is NOT a radio ?
   setValueFor(fieldName: Register, value: unknown) {
-    // TODO: refactor this
-    // fieldName could be passed in as 'radio.something' instead of { groupName: 'radio', element: 'something'}
-    if (typeof fieldName === "string") {
+    // NOTE: fieldName could be passed in as 'radio.something'
+    // instead of { groupName: 'radio', element: 'something'}
+    const isSimpleReg =
+      typeof fieldName === "string" &&
+      !this.internalState.isGroupRegAsString(fieldName);
+
+    if (isSimpleReg) {
       this.internalState.setValueFor(fieldName, value);
       return;
     }
 
     // NOTE: deal with radio inputs
     const keysOfFormValues = Object.keys(this.getValues());
-    const partialFieldName =
-      fieldName.groupName + this.internalState.getDelimiter();
+    const groupName = this.internalState.getGroupName(fieldName);
+
+    if (groupName == null) {
+      throw Error("[Error-setValueFor]: groupName format not supported");
+    }
 
     // reset radio input (every option is set to 'false')
     for (const key of keysOfFormValues) {
-      if (!key.includes(partialFieldName)) continue;
+      if (!key.includes(groupName.groupName)) continue;
       if (this.getValueFor(key) !== true) continue;
 
       // only set the selected option to false

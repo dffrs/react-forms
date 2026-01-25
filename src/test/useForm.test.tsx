@@ -337,4 +337,106 @@ describe("Form Tests: useForm", () => {
 
     expect(input).toHaveValue("default value");
   });
+
+  it("setValueFor input radio when string is passed in", () => {
+    const RadioComp = () => {
+      const form = useForm("radio-form", {
+        defaultValues: {
+          contact: {
+            phone: false,
+            mail: false,
+            email: true,
+          },
+        },
+      });
+
+      useEffect(() => {
+        expect(form.getValues()).toEqual({
+          "contact.email": true,
+          "contact.phone": false,
+          "contact.mail": false,
+        });
+      }, [form]);
+
+      return (
+        <>
+          <input
+            type="radio"
+            id="contactChoice1"
+            value="email"
+            {...form.register({ groupName: "contact", element: "email" })}
+          />
+          <label htmlFor="contactChoice1">Email</label>
+          <input
+            type="radio"
+            id="contactChoice2"
+            value="phone"
+            {...form.register({ groupName: "contact", element: "phone" })}
+          />
+          <label htmlFor="contactChoice2">Phone</label>
+          <input
+            type="radio"
+            id="contactChoice3"
+            value="mail"
+            {...form.register({ groupName: "contact", element: "mail" })}
+          />
+          <label htmlFor="contactChoice3">Mail</label>
+          <button
+            data-testid="check-group-reg"
+            onClick={() => {
+              form.setValueFor(
+                { groupName: "contact", element: "phone" },
+                true,
+              );
+
+              expect(form.getValues()).toEqual({
+                "contact.email": false,
+                "contact.phone": true,
+                "contact.mail": false,
+              });
+            }}
+          >
+            group reg
+          </button>
+          <button
+            data-testid="check-string-reg"
+            onClick={() => {
+              form.setValueFor("contact.email", true);
+
+              expect(form.getValues()).toEqual({
+                "contact.email": true,
+                "contact.phone": false,
+                "contact.mail": false,
+              });
+            }}
+          >
+            string reg
+          </button>
+        </>
+      );
+    };
+    const { container } = render(<RadioComp />);
+
+    const radioPhone = container.querySelector('input[value="phone"]');
+    if (radioPhone == null) throw Error("field not found");
+
+    const radioMail = container.querySelector('input[value="mail"]');
+    if (radioMail == null) throw Error("field not found");
+
+    const btnGroup = container.querySelector('[data-testid="check-group-reg"]');
+    if (btnGroup == null) throw Error("button not found");
+
+    const btnString = container.querySelector(
+      '[data-testid="check-string-reg"]',
+    );
+    if (btnString == null) throw Error("button not found");
+
+    // verify that 'setValueFor' works fine with { groupName: <string>, element: <string>}
+    fireEvent.click(radioPhone);
+    fireEvent.click(btnGroup);
+
+    // verify that 'setValueFor' works fine with 'groupName.element'
+    fireEvent.click(radioMail);
+    fireEvent.click(btnString);
+  });
 });
