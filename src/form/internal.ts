@@ -12,12 +12,25 @@ class Value<V> {
   }
 }
 
+class Error_<V extends string> {
+  error: V | undefined;
+  constructor() {
+    this.error = undefined;
+  }
+
+  setError(msg: V | undefined) {
+    this.error = msg;
+  }
+}
+
 const SValue = Spy(Value);
+const SError = Spy(Error_);
 
 export class Internal {
   registor: Record<string, FormRefs>;
   defaultValues: Record<string, unknown>;
   values: Record<string, InstanceType<typeof SValue>>;
+  errors: Record<string, InstanceType<typeof SError>>;
 
   private static readonly DELIMITER = ".";
 
@@ -25,6 +38,7 @@ export class Internal {
     this.registor = {};
     this.defaultValues = {};
     this.values = {};
+    this.errors = {};
   }
 
   ///////////////////////////////////////////////////
@@ -382,5 +396,42 @@ export class Internal {
         updateFormValues(undefined);
         break;
     }
+  }
+
+  getErrorFor(_fieldName: Register) {
+    const fieldName = this.simplifyFieldName(_fieldName);
+
+    if (!(fieldName in this.errors)) {
+      console.error(
+        `[Error-getErrorFor]: ${fieldName} needs to be registered first`,
+      );
+
+      const err = new SError();
+
+      err.setError(undefined);
+
+      this.errors[fieldName] = err;
+    }
+
+    return this.errors[fieldName].error;
+  }
+
+  setErrorFor(_fieldName: Register, message: string) {
+    const fieldName = this.simplifyFieldName(_fieldName);
+
+    if (!(fieldName in this.errors)) {
+      console.error(
+        `[Error-setErrorFor]: Not possible to set error for ${_fieldName}. It must be registered first`,
+      );
+      return false;
+    }
+
+    let err;
+    if (fieldName in this.errors) err = this.errors[fieldName];
+    else err = new SError();
+
+    err.setError(message);
+
+    return true;
   }
 }

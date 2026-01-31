@@ -312,4 +312,12 @@ export class Form {
 
     this.internalState.setValueFor(fieldName, value);
   }
+
+  getErrorFor(fieldName: Register) {
+    return this.internalState.getErrorFor(fieldName);
+  }
+
+  setErrorFor(fieldName: Register, message: string) {
+    return this.internalState.setErrorFor(fieldName, message);
+  }
 }
