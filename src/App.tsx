@@ -50,6 +50,13 @@ function App() {
 
       <button
         type="button"
+        onClick={() => console.log(form.internalState.errors)}
+      >
+        internal errors
+      </button>
+
+      <button
+        type="button"
         onClick={() => form.setValueFor("i-checkbox", !value)}
       >
         toggle checkbox
