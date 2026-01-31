@@ -398,6 +398,29 @@ export class Internal {
     }
   }
 
+  initErrorFor(_fieldName: Register) {
+    const fieldName = this.simplifyFieldName(_fieldName);
+
+    let err;
+    if (fieldName in this.errors) err = this.errors[fieldName];
+    else err = new SError(); // NOTE: error.value will be initialized with undefined
+
+    this.errors[fieldName] = err;
+  }
+
+  getErrors() {
+    return Object.keys(this.errors).reduce<Record<string, string | undefined>>(
+      (prev, key) => {
+        const err = this.getErrorFor(key);
+
+        prev[key] = err;
+
+        return prev;
+      },
+      {},
+    );
+  }
+
   getErrorFor(_fieldName: Register) {
     const fieldName = this.simplifyFieldName(_fieldName);
 

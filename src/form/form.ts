@@ -176,6 +176,9 @@ export class Form {
         // Important to do this AFTER injecting default values (`values` will take those into consideration)
         this.internalState.initValueFor(fieldName, inpRef);
 
+        // NOTE: init errors as well with undefined
+        this.internalState.initErrorFor(fieldName);
+
         return inpRef;
       },
       onChange: (ev: ChangeEvent<V>) => {
@@ -311,6 +314,10 @@ export class Form {
     }
 
     this.internalState.setValueFor(fieldName, value);
+  }
+
+  getErrors() {
+    return this.internalState.getErrors();
   }
 
   getErrorFor(fieldName: Register) {
