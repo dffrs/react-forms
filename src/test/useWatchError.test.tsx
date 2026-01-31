@@ -34,6 +34,14 @@ describe("useWatchError tests", () => {
               );
               expect(error).toBe("invalid input");
 
+              // clear error
+              const hasClearedValue = form.clearErrorFor("text-input");
+              expect(hasClearedValue).toBeTruthy();
+
+              expect(form.getErrorFor("text-input")).toBe(undefined);
+              expect(form.internalState.errors["text-input"]).toBe(undefined);
+              expect(error).toBe(undefined);
+
               // do the same thing but for an non-existing input
               const shouldNotHaveError = form.setErrorFor(
                 "non-existing-input",

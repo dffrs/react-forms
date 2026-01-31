@@ -317,7 +317,11 @@ export class Form {
     return this.internalState.getErrorFor(fieldName);
   }
 
-  setErrorFor(fieldName: Register, message: string) {
+  setErrorFor(fieldName: Register, message: string | undefined) {
     return this.internalState.setErrorFor(fieldName, message);
+  }
+
+  clearErrorFor(_fieldName: Register) {
+    return this.setErrorFor(_fieldName, undefined);
   }
 }

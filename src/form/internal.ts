@@ -416,7 +416,7 @@ export class Internal {
     return this.errors[fieldName].error;
   }
 
-  setErrorFor(_fieldName: Register, message: string) {
+  setErrorFor(_fieldName: Register, message: string | undefined) {
     const fieldName = this.simplifyFieldName(_fieldName);
 
     if (!(fieldName in this.errors)) {
