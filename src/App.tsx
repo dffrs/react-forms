@@ -4,6 +4,7 @@ import {
   deepEqual,
   partialKeyRegex,
   useForm,
+  useWatchError,
   useWatchValue,
 } from "./form";
 
@@ -23,10 +24,15 @@ function App() {
   });
 
   const value = useWatchValue("i-select", { form, compareFn: deepEqual });
+  const error = useWatchError("i-text", { form });
 
   useEffect(() => {
     console.log("value", value);
   }, [value]);
+
+  useEffect(() => {
+    console.log("error", error);
+  }, [error]);
 
   return (
     <>
@@ -67,6 +73,14 @@ function App() {
         }}
       >
         get keys by pattern
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          form.setErrorFor("i-text", "invalid input");
+        }}
+      >
+        inject errors
       </button>
       {open && (
         <div
